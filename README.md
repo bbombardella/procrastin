@@ -67,7 +67,7 @@ L'un des points clés de ce projet réside dans la mise en place de tout un syst
 
 Dans notre cas précis, la "Single Source of Truth" (seule source de vérité) est le contrat [ts-rest](https://ts-rest.com/). De plus, nous avons ajouté des outils nous permettant de générer automatiquement des schéma Zod (utilisés ensuite dans *ts-rest*) à partir de notre schéma Prisma.
 
-![Architecture](./specs/architecture.png)
+![Architecture](./docs/diagrams/architecture.png)
 
 #### Monorepo
 
