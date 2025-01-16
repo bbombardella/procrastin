@@ -1,0 +1,16 @@
+type: 'application'
+language: 'typescript'
+
+project:
+  name: 'procrastin-server'
+  description: 'LinkedIn clone'
+  maintainers: ['bartholome.gili', 'florian.havard', 'bastien.bombardella']
+
+tasks:
+  start:
+    command: npm run start
+    local: true
+  build:
+    command: npm run build
+  lint:
+    command: npm run eslint .

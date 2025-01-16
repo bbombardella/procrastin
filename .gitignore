@@ -6,7 +6,6 @@
 .moon/docker
 
 # ide
-.vscode
 .idea
 
 # other
