@@ -1,12 +1,24 @@
 {
   "extends": "../../tsconfig.options.json",
   "compilerOptions": {
-    "noEmit": true
+    "noEmit": true,
+    "module": "NodeNext",
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@procrastin/contract": ["../../packages/contract/src"],
+      "@procrastin/prisma": ["../../packages/prisma/src"]
+    }
   },
   "include": [
     "src/**/*", 
     "*.ts",
-    "../../types/**/*"
+    // global
+    "../../types/**/*",
+    // packages
+    "../../packages/contract/src/**/*",
+    "../../packages/prisma/src/**/*"
   ],
   "references": []
 }

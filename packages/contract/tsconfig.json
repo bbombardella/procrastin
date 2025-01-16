@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.options.json",
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "module": "nodenext",
+    "outDir": "./lib",
+  },
+  "include": [],
+  "references": []
+}

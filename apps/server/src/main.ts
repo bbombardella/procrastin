@@ -1,15 +1,46 @@
-import fastify from 'fastify'
+import Fastify from 'fastify'
+import { initServer } from '@ts-rest/fastify'
+import { contract } from '@procrastin/contract'
+import { prisma } from '@procrastin/prisma'
 
-const server = fastify()
+const app = Fastify();
 
-server.get('/ping', async (request, reply) => {
-	return 'pong\n'
-})
+const s = initServer();
 
-server.listen({ port: 8080 }, (err, address) => {
-	if (err) {
-		console.error(err)
-		process.exit(1)
-	}
-	console.log(`Server listening at ${address}`)
-})
+const router = s.router(contract, {
+  users: {
+    getUser: async ({ params: { id } }) => {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: Number(id)
+        }
+      });
+
+      return {
+        status: 200,
+        body: user
+      }
+    },
+    getUsers: async () => {
+      const users = await prisma.user.findMany();
+
+      return {
+        status: 200,
+        body: users
+      }
+    }
+  }
+});
+
+app.register(s.plugin(router));
+
+const start = async () => {
+  try {
+    await app.listen({ port: 3000 });
+  } catch (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
+};
+
+start();

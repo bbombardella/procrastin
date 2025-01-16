@@ -1,0 +1,6 @@
+# data
+db.sqlite
+db.sqlite-journal
+
+# codegen
+generated

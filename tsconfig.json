@@ -9,7 +9,10 @@
 			"path": "apps/server"
 		},
 		{
-			"path": "packages/types"
+			"path": "packages/prisma"
+		},
+		{
+			"path": "packages/contract"
 		}
 	]
 }

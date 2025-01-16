@@ -2,9 +2,13 @@
 $schema: 'https://moonrepo.dev/schemas/workspace.json'
 
 projects:
+  # applications
   client: 'apps/client'
   server: 'apps/server'
-  types: 'packages/types'
+  
+  # packages
+  prisma: 'packages/prisma'
+  contract: 'packages/contract'
 
 vcs:
   manager: "git"
