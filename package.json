@@ -1,0 +1,27 @@
+{
+  "name": "procrastin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "engines": {
+    "node": "~22.13",
+    "npm": "pnpm",
+    "pnpm": ">=8.0.0",
+    "yarn": "pnpm"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@antfu/eslint-config": "^3.14.0",
+    "@moonrepo/cli": "^1.31.2",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "typescript": "^5.7.3"
+  },
+  "packageManager": "pnpm@9.15.4"
+}
