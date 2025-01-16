@@ -1,12 +1,25 @@
 {
-  "extends": "expo/tsconfig.base",
+  "extends": "../../tsconfig.options.json",
   "compilerOptions": {
+    "allowJs": true,
+    "esModuleInterop": true,
+    "jsx": "react-native",
+    "lib": [
+      "DOM",
+      "ESNext"
+    ],
+    "moduleResolution": "node",
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "ESNext",
     "strict": true,
     "paths": {
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "outDir": "../../.moon/cache/types/apps/client"
   },
   "include": [
     "**/*.ts",

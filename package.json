@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
-    "node": "22.13.0",
+    "node": "~22.13",
     "npm": "pnpm",
     "pnpm": ">=8.0.0",
     "yarn": "pnpm"
@@ -19,5 +19,6 @@
     "@antfu/eslint-config": "^3.14.0",
     "@moonrepo/cli": "^1.31.2",
     "eslint-plugin-simple-import-sort": "^12.1.1"
-  }
+  },
+  "packageManager": "pnpm@9.15.4"
 }

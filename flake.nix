@@ -22,9 +22,12 @@
 
           packages = with pkgs; [
             # languages
-            nodejs-22_x
+            nodejs_22
             nodePackages.pnpm
 
+            # tools
+            moon
+            
             # misc
             docker
             git
