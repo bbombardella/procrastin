@@ -1,38 +1,17 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+# secrets
+.env
 
-# dependencies
-node_modules/
+# moon
+.moon/cache
+.moon/docker
 
-# Expo
-.expo/
-dist/
-web-build/
-expo-env.d.ts
+# ide
+.vscode
+.idea
 
-# Native
-*.orig.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
+# other
+tmp
 
-# Metro
-.metro-health-check*
-
-# debug
-npm-debug.*
-yarn-debug.*
-yarn-error.*
-
-# macOS
-.DS_Store
-*.pem
-
-# local env files
-.env*.local
-
-# typescript
-*.tsbuildinfo
-
-app-example
+# node
+.npm
+node_modules
