@@ -3,6 +3,8 @@
   "compilerOptions": {
     "noEmit": true,
     "module": "NodeNext",
+    "strict": true,
+    "strictNullChecks": true,
 
     "baseUrl": ".",
     "paths": {

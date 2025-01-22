@@ -1,9 +1,9 @@
-import { UserModel } from '@procrastin/prisma'
+import { UserCreateInputSchema, UserSchema } from '@procrastin/prisma'
 import { initContract } from '@ts-rest/core'
 
-const { router } = initContract()
+const c = initContract()
 
-export const usersContract = router(
+export const usersContract = c.router(
 	{
 		// CRUD
 		getUsers: {
@@ -11,7 +11,7 @@ export const usersContract = router(
 			path: '',
 			summary: 'Get all users',
 			responses: {
-				200: UserModel.array(),
+				200: UserSchema.array(),
 			},
 		},
 		getUser: {
@@ -19,7 +19,16 @@ export const usersContract = router(
 			path: '/:id',
 			summary: 'Get a user by id',
 			responses: {
-				200: UserModel,
+				200: UserSchema,
+			},
+		},
+		createUser: {
+			method: 'POST',
+			path: '',
+			summary: 'Create a user',
+			body: UserCreateInputSchema,
+			responses: {
+				200: UserSchema,
 			},
 		},
 	},

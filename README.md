@@ -22,14 +22,13 @@
     - [Seed the database](#seed-the-database)
   - [CLI commands](#cli-commands)
 
-
 ## Project structure
 
 ```bash
 /
 ├── apps
 │   ├── server # Fastify API
-│   └── client # React Native app 
+│   └── client # React Native app
 └── libs
     ├── contract # The shared API contract w/ auto-generated client services and typescript models for the front-end
     ├── prisma # All prisma related things
@@ -71,7 +70,7 @@ Dans notre cas précis, la "Single Source of Truth" (seule source de vérité) e
 
 #### Monorepo
 
-Un monorepo permet de gérer l'entiereté du projet dans un seul repository git. Cela permet de gérer les dépendances entre les projets, de gérer les tests, les builds, les générateurs de code, etc. 
+Un monorepo permet de gérer l'entiereté du projet dans un seul repository git. Cela permet de gérer les dépendances entre les projets, de gérer les tests, les builds, les générateurs de code, etc.
 
 Il est très important dans notre cas puisque l'on peut ainsi gérer à la fois le back-end et le front-end dans le même repository, et donc faciliter l'auto-génération et la synchronisation des modèles de données et des types entre le back-end et le front-end.
 
