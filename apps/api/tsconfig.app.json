@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "out-tsc/api",
+    "module": "esnext",
+    "types": [
+      "node"
+    ],
+    "rootDir": "src",
+    "moduleResolution": "node",
+    "tsBuildInfoFile": "out-tsc/api/tsconfig.app.tsbuildinfo"
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [],
+  "references": [
+    {
+      "path": "../../packages/prisma/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/contract/tsconfig.lib.json"
+    }
+  ]
+}

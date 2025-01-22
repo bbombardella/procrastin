@@ -1,10 +1,13 @@
 {
-  "extends": "../../tsconfig.options.json",
-  "compilerOptions": {
-    "emitDeclarationOnly": true,
-    "module": "nodenext",
-    "outDir": "./lib",
-  },
+  "extends": "../../tsconfig.base.json",
+  "files": [],
   "include": [],
-  "references": []
+  "references": [
+    {
+      "path": "../prisma"
+    },
+    {
+      "path": "./tsconfig.lib.json"
+    }
+  ]
 }

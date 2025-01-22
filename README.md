@@ -27,8 +27,8 @@
 ```bash
 /
 ├── apps
-│   ├── server # Fastify API
-│   └── client # React Native app
+│   ├── api # Fastify API
+│   └── mobile # React Native app
 └── libs
     ├── contract # The shared API contract w/ auto-generated client services and typescript models for the front-end
     ├── prisma # All prisma related things
@@ -102,7 +102,7 @@ L'utilisation d'un CLI fait maison adapté aux besoins spécifiques du projet pe
 #### Start
 
 ```bash
-moon run client:start
+npx nx start mobile
 ```
 
 ### Server
@@ -110,7 +110,7 @@ moon run client:start
 #### Start
 
 ```bash
-moon run server:start
+moon nx start api
 ```
 
 ### Prisma (database)
