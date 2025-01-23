@@ -34,6 +34,7 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
+.direnv
 
 # system files
 .DS_Store
@@ -45,7 +46,7 @@ Thumbs.db
 # secrets
 .env
 
-# Expo
+# expo
 node_modules/
 .expo/
 .yarn/
