@@ -66,7 +66,7 @@
     }
   },
   "dependencies": {
-    "@procrastin/contract": "workspace:*",
-    "@procrastin/prisma": "workspace:*"
+    "@procrastin/contract": "*",
+    "@procrastin/prisma": "*"
   }
 }

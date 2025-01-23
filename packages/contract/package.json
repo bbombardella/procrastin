@@ -5,7 +5,7 @@
     "build": "tsc --build tsconfig.lib.json"
   },
   "dependencies": {
-    "@procrastin/prisma": "workspace:*"
+    "@procrastin/prisma": "*"
   },
   "type": "module",
   "main": "./dist/index.js",

@@ -41,5 +41,9 @@
   },
   "volta": {
     "node": "22.13.0"
-  }
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
 }
