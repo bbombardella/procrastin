@@ -1,11 +1,6 @@
 {
   "name": "@procrastin/prisma",
   "version": "0.0.1",
-  "scripts": {
-    "build": "tsc --build tsconfig.lib.json",
-    "generate": "prisma generate --schema src/schema.prisma"
-  },
-  "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "private": true,
@@ -17,10 +12,7 @@
       "default": "./dist/index.js"
     }
   },
-  "module": "./dist/index.js",
-  "nx": {
-    "sourceRoot": "packages/prisma/src",
-    "projectType": "library",
-    "name": "prisma"
+  "dependencies": {
+    "tslib": "^2.3.0"
   }
 }

@@ -1,16 +1,9 @@
 {
   "name": "@procrastin/contract",
   "version": "0.0.1",
-  "scripts": {
-    "build": "tsc --build tsconfig.lib.json"
-  },
-  "dependencies": {
-    "@procrastin/prisma": "*"
-  },
-  "type": "module",
+  "private": true,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "private": true,
   "exports": {
     "./package.json": "./package.json",
     ".": {
@@ -19,10 +12,8 @@
       "default": "./dist/index.js"
     }
   },
-  "module": "./dist/index.js",
-  "nx": {
-    "sourceRoot": "packages/contract/src",
-    "projectType": "library",
-    "name": "contract"
+  "dependencies": {
+    "@procrastin/prisma": "*",
+    "tslib": "^2.3.0"
   }
 }

@@ -28,6 +28,23 @@ export const usersContract = c.router(
 			summary: 'Create a user',
 			body: UserCreateInputSchema,
 			responses: {
+				201: UserSchema,
+			},
+		},
+		updateUser: {
+			method: 'PUT',
+			path: '/:id',
+			summary: 'Update a user by id',
+			body: UserCreateInputSchema,
+			responses: {
+				200: UserSchema,
+			},
+		},
+		deleteUser: {
+			method: 'DELETE',
+			path: '/:id',
+			summary: 'Delete a user by id',
+			responses: {
 				200: UserSchema,
 			},
 		},

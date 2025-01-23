@@ -32,6 +32,7 @@
             # misc
             docker
             git
+            openssl
           ];
 
           env = {

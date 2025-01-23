@@ -2,6 +2,13 @@
   "name": "@procrastin/api",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "dev": "ts-node-dev --transpile-only src/main.ts"
+  },
+  "dependencies": {
+    "@procrastin/contract": "*",
+    "@procrastin/prisma": "*"
+  },
   "nx": {
     "name": "api",
     "projectType": "application",
@@ -15,7 +22,7 @@
         "defaultConfiguration": "production",
         "options": {
           "platform": "node",
-          "outputPath": "dist/apps/api",
+          "outputPath": "dist",
           "format": [
             "cjs"
           ],
@@ -64,9 +71,5 @@
         }
       }
     }
-  },
-  "dependencies": {
-    "@procrastin/contract": "*",
-    "@procrastin/prisma": "*"
   }
 }

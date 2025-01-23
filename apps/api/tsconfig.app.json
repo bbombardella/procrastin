@@ -2,12 +2,10 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "out-tsc/api",
-    "module": "esnext",
     "types": [
       "node"
     ],
     "rootDir": "src",
-    "moduleResolution": "node",
     "tsBuildInfoFile": "out-tsc/api/tsconfig.app.tsbuildinfo"
   },
   "include": [
