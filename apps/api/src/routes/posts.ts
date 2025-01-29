@@ -58,7 +58,7 @@ export const postsRouter = s.router(contract.posts, {
 
 		return {
 			status: 200,
-			body: post
+			body: post,
 		}
 	},
 })

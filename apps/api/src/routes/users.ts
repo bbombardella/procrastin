@@ -58,7 +58,7 @@ export const usersRouter = s.router(contract.users, {
 
 		return {
 			status: 200,
-			body: user
+			body: user,
 		}
 	},
 })

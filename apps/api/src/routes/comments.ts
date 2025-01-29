@@ -58,7 +58,7 @@ export const commentsRouter = s.router(contract.comments, {
 
 		return {
 			status: 200,
-			body: comment
+			body: comment,
 		}
 	},
 })

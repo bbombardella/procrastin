@@ -1,8 +1,8 @@
 import { initContract } from '@ts-rest/core'
 
-import { usersContract } from './users'
-import { postsContract } from './posts'
 import { commentsContract } from './comments'
+import { postsContract } from './posts'
+import { usersContract } from './users'
 
 const { router } = initContract()
 
