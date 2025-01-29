@@ -1,3 +1,8 @@
+import 'dotenv/config'
+
+import process from 'node:process'
+
+import fastifySensible from '@fastify/sensible'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
 import { contract } from '@procrastin/contract'
@@ -8,9 +13,7 @@ import Fastify from 'fastify'
 import { commentsRouter } from './routes/comments'
 import { postsRouter } from './routes/posts'
 import { usersRouter } from './routes/users'
-
-const host = process.env.HOST ?? 'localhost'
-const port = process.env.PORT ? Number(process.env.PORT) : 3000
+import { env } from './utils/environment'
 
 const server = Fastify({
 	logger: true,
@@ -35,16 +38,17 @@ server
 	.register(fastifySwagger, {
 		transformObject: () => openApiDocument,
 	})
+	.register(fastifySensible)
 	.register(fastifySwaggerUi, {
 		routePrefix: '/docs',
 	})
 
 server
-	.listen({ port, host }, (err) => {
+	.listen({ port: env.PORT, host: env.HOST }, (err) => {
 		if (err) {
 			server.log.error(err)
 			process.exit(1)
 		} else {
-			console.log(`[ ready ] http://${host}:${port}`)
+			console.log(`[ ready ] http://${env.HOST}:${env.PORT}`)
 		}
 	})
