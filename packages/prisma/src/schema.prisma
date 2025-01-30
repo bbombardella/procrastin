@@ -1,61 +1,62 @@
 datasource db {
-    provider = "sqlite"
-    url      = "file:db.sqlite"
+  provider = "sqlite"
+  url      = "file:db.sqlite"
 }
 
 generator client {
-    provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "darwin-arm64"]
 }
 
 generator zodPrisma {
-    provider = "npx zod-prisma-types"
-    output   = "./generated/zod"
+  provider = "npx zod-prisma-types"
+  output   = "./generated/zod"
 }
 
 model User {
-    // attributes
-    id                Int      @id @default(autoincrement())
-    createdAt         DateTime @default(now())
-    updatedAt         DateTime @updatedAt
-    email             String
-    firstName         String
-    lastName          String
-    description       String
-    profilePictureUrl String
-    role              String   @default("user")
+  // attributes
+  id                Int      @id @default(autoincrement())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  email             String
+  firstName         String
+  lastName          String
+  description       String
+  profilePictureUrl String
+  role              String   @default("user")
 
-    // relations
-    posts    Post[]
-    comments Comment[]
+  // relations
+  posts    Post[]
+  comments Comment[]
 }
 
 model Post {
-    // attributes
-    id        Int      @id @default(autoincrement())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    title     String
-    content   String
-    mediaUrl  String
-    published Boolean  @default(false)
+  // attributes
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String
+  content   String
+  mediaUrl  String
+  published Boolean  @default(false)
 
-    // relations
-    author   User @relation(fields: [authorId], references: [id])
-    authorId Int
+  // relations
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int
 
-    comments Comment[]
+  comments Comment[]
 }
 
 model Comment {
-    // attributes
-    id        Int      @id @default(autoincrement())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    content   String
+  // attributes
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  content   String
 
-    // relations
-    author   User @relation(fields: [authorId], references: [id])
-    authorId Int
-    post     Post @relation(fields: [postId], references: [id])
-    postId   Int
+  // relations
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int
+  post     Post @relation(fields: [postId], references: [id])
+  postId   Int
 }
