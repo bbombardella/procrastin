@@ -31,7 +31,7 @@
   ],
   "references": [
     {
-      "path": "../../packages/prisma/tsconfig.lib.json"
+      "path": "../../packages/environment/tsconfig.lib.json"
     },
     {
       "path": "../../packages/contract/tsconfig.lib.json"

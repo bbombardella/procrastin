@@ -7,6 +7,12 @@
   ],
   "references": [
     {
+      "path": "../../packages/environment"
+    },
+    {
+      "path": "../../packages/contract"
+    },
+    {
       "path": "./tsconfig.app.json"
     }
   ]

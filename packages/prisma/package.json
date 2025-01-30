@@ -14,5 +14,10 @@
   },
   "dependencies": {
     "tslib": "^2.3.0"
+  },
+  "nx": {
+    "sourceRoot": "packages/prisma/src",
+    "projectType": "library",
+    "name": "prisma"
   }
 }

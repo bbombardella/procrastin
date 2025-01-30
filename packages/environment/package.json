@@ -1,9 +1,12 @@
 {
-  "name": "@procrastin/contract",
+  "name": "@procrastin/environment",
   "version": "0.0.1",
-  "private": true,
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "private": true,
   "exports": {
     "./package.json": "./package.json",
     ".": {
@@ -12,13 +15,9 @@
       "default": "./dist/index.js"
     }
   },
-  "dependencies": {
-    "@procrastin/prisma": "*",
-    "tslib": "^2.3.0"
-  },
   "nx": {
-    "sourceRoot": "packages/contract/src",
+    "sourceRoot": "packages/environment/src",
     "projectType": "library",
-    "name": "contract"
+    "name": "environment"
   }
 }
