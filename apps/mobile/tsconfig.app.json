@@ -1,0 +1,40 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "out-tsc/api",
+    "types": [
+      "node"
+    ],
+    "tsBuildInfoFile": "out-tsc/api/tsconfig.app.tsbuildinfo",
+
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "emitDeclarationOnly": true,
+    "lib": [
+      "dom",
+      "es2022"
+    ],
+    "jsx": "react-native",
+    "allowJs": true,
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js"
+  ],
+  "references": [
+    {
+      "path": "../../packages/prisma/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/contract/tsconfig.lib.json"
+    }
+  ]
+}
