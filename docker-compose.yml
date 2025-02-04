@@ -1,0 +1,18 @@
+services:
+
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: ./infra/docker/api.Dockerfile
+    restart: unless-stopped
+    command:
+      - /bin/sh
+      - -c
+      - "node /app/dist/apps/api/src/main.js"
+    env_file:
+      - ./apps/api/.env
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - ./data:/app/data
