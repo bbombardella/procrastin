@@ -43,7 +43,7 @@ export default function TabLayout() {
 			/>
 
 			<Tabs.Screen
-				name="explore"
+				name="profil"
 				options={{
 					title: 'Profil',
 					tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.circle.fill" color={color} />,

@@ -2,6 +2,7 @@ import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useState } from "react";
 import { Link } from "expo-router";
+import { IconSymbol } from "./ui/IconSymbol";
 
 export default function Post({ id, profileName, imageUrl, description }: { id: string, profileName: string, imageUrl: string, description: string }) {
     const [liked, setLiked] = useState(false);
@@ -16,7 +17,7 @@ export default function Post({ id, profileName, imageUrl, description }: { id: s
                     <MaterialIcons name={liked ? "favorite" : "favorite-border"} size={24} color={liked ? "red" : "black"} />
                 </TouchableOpacity>
                 <Link href='/postDetails' >
-                    <MaterialIcons name="add-comment" size={24} color="black" />
+                    <IconSymbol size={24} color="black" name="plus.bubble"/>
                 </Link>
             </View>
         </View>
