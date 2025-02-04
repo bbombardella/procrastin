@@ -4,6 +4,7 @@ import { HelloWave } from '../../components/HelloWave'
 import ParallaxScrollView from '../../components/ParallaxScrollView'
 import { ThemedText } from '../../components/ThemedText'
 import { ThemedView } from '../../components/ThemedView'
+import { queryClient } from '../../libs/http'
 
 const styles = StyleSheet.create({
 	titleContainer: {
@@ -24,6 +25,8 @@ const styles = StyleSheet.create({
 	},
 })
 export default function HomeScreen() {
+	const { data, isLoading } = queryClient.users.getUsers.useQuery(['tmp'])
+
 	return (
 		<ParallaxScrollView
 			headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -43,6 +46,9 @@ export default function HomeScreen() {
 				<ThemedText>
 					Edit
 					Users:
+					{' '}
+					{isLoading ? 'Loading...' : ''}
+					{data?.body.length}
 					{' '}
 					<ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>
 					{' '}
