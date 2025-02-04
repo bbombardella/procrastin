@@ -34,7 +34,8 @@ export default function HomeScreen() {
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
                         <Post
-						profileName={item.profileName}
+							id={item.id}
+                            profileName={item.profileName}
                             imageUrl={item.imageUrl}
                             description={item.description}
                         />
@@ -46,7 +47,18 @@ export default function HomeScreen() {
     );
 }
 
+
 const styles = StyleSheet.create({
+	container: {
+		padding: 16,
+	},
+	reactLogo: {
+		height: 178,
+		width: 290,
+		bottom: 0,
+		left: 0,
+		position: 'absolute',
+	},
 	titleContainer: {
 		flexDirection: 'row',
 		alignItems: 'center',
@@ -56,21 +68,4 @@ const styles = StyleSheet.create({
 		gap: 8,
 		marginBottom: 8,
 	},
-	reactLogo: {
-		height: 178,
-		width: 290,
-		bottom: 0,
-		left: 0,
-		position: 'absolute',
-	},
-    container: {
-        padding: 16,
-    },
-    reactLogo: {
-		height: 178,
-        width: 290,
-        bottom: 0,
-        left: 0,
-        position: 'absolute',
-    },
 });
