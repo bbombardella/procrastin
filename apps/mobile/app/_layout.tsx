@@ -42,8 +42,7 @@ export default function RootLayout() {
 				<QueryClientProvider client={client}>
 					<SupabaseProvider>
 						<Stack>
-							<Stack.Screen name="(public)/sign-in" options={{ headerShown: false, title: 'Sign In' }} />
-							<Stack.Screen name="(public)/sign-up" options={{ title: 'Sign Up' }} />
+							<Stack.Screen name="(public)" options={{ headerShown: false }} />
 							<Stack.Screen name="(protected)" options={{ headerShown: false }} />
 							<Stack.Screen name="+not-found" />
 						</Stack>
