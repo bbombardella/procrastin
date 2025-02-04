@@ -2,6 +2,7 @@ import 'dotenv/config'
 
 import process from 'node:process'
 
+import fastifyCors from '@fastify/cors'
 import fastifySensible from '@fastify/sensible'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
@@ -37,6 +38,11 @@ server
 	.register(s.plugin(router))
 	.register(fastifySwagger, {
 		transformObject: () => openApiDocument,
+	})
+	.register(fastifyCors, {
+		origin: '*',
+		methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+		allowedHeaders: ['Content-Type', 'Authorization'],
 	})
 	.register(fastifySensible)
 	.register(fastifySwaggerUi, {
