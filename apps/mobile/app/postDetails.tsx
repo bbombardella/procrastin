@@ -1,5 +1,5 @@
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { IconSymbol } from "@/components/ui/IconSymbol";
+import ParallaxScrollView from "../components/ParallaxScrollView";
+import { IconSymbol } from "../components/ui/IconSymbol";
 import { FlatList, Image, StyleSheet, Text, View } from "react-native";
 
 const post = {
@@ -13,7 +13,7 @@ const post = {
     ],
 };
 
-export default function PostDetails() {
+export default function postDetails() {
     return (
         <ParallaxScrollView
             headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}

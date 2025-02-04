@@ -1,10 +1,9 @@
 import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
+import { Link } from "expo-router";
 
 export default function Post({ id, profileName, imageUrl, description }: { id: string, profileName: string, imageUrl: string, description: string }) {
-    const navigation = useNavigation();
     const [liked, setLiked] = useState(false);
 
     return (
@@ -14,11 +13,11 @@ export default function Post({ id, profileName, imageUrl, description }: { id: s
             <Text style={styles.description}>{description}</Text>
             <View style={styles.actionsContainer}>
                 <TouchableOpacity onPress={() => setLiked(!liked)}>
-                <MaterialIcons name={liked ? "favorite" : "favorite-border"} size={24} color={liked ? "red" : "black"} />
+                    <MaterialIcons name={liked ? "favorite" : "favorite-border"} size={24} color={liked ? "red" : "black"} />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <Link href='/postDetails' >
                     <MaterialIcons name="add-comment" size={24} color="black" />
-                </TouchableOpacity>
+                </Link>
             </View>
         </View>
     );

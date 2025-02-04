@@ -37,6 +37,7 @@ export default function RootLayout() {
 				<Stack>
 					<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 					<Stack.Screen name="+not-found" />
+					<Stack.Screen name="postDetails" />
 				</Stack>
 				<StatusBar style="auto" />
 			</QueryClientProvider>

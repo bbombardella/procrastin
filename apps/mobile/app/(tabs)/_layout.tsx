@@ -35,10 +35,10 @@ export default function TabLayout() {
 			/>
 
 			<Tabs.Screen
-				name="postDetails"
+				name="new"
 				options={{
 					title: 'NewPost',
-					tabBarIcon: ({ color }) => <IconSymbol size={28} name="new-post.fill" color={color} />,
+					tabBarIcon: ({ color }) => <IconSymbol size={28} name="plus.circle.fill" color={color} />,
 				}}
 			/>
 
@@ -46,7 +46,7 @@ export default function TabLayout() {
 				name="explore"
 				options={{
 					title: 'Profil',
-					tabBarIcon: ({ color }) => <IconSymbol size={28} name="profil.fill" color={color} />,
+					tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.circle.fill" color={color} />,
 				}}
 			/>
 		</Tabs>

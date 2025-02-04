@@ -13,8 +13,8 @@ const MAPPING = {
 	'paperplane.fill': 'send',
 	'chevron.left.forwardslash.chevron.right': 'code',
 	'chevron.right': 'chevron-right',
-	'profil.fill': 'account-circle',
-	'new-post.fill': 'add-circle',
+	'person.circle.fill': 'account-circle',
+	'plus.circle.fill': 'add-circle-outline',
 
 } as Partial<
 	Record<
