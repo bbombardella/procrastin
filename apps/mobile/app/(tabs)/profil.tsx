@@ -1,6 +1,4 @@
-import { StyleSheet, View, TextInput, Button, Alert } from 'react-native';
-import ParallaxScrollView from '../../components/ParallaxScrollView';
-import { IconSymbol } from '../../components/ui/IconSymbol';
+import { StyleSheet, View, TextInput, Button, Alert, useColorScheme } from 'react-native';
 import { useState } from 'react';
 import { ThemedText } from '../../components/ThemedText';
 
@@ -9,6 +7,9 @@ export default function Profil() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+
+    const colorScheme = useColorScheme();
+    const isDarkMode = colorScheme === 'dark';
 
     const handleSubmit = () => {
         if (!name || !email || !password || !confirmPassword) {
@@ -21,107 +22,104 @@ export default function Profil() {
             return;
         }
 
-        // Ici, vous pouvez ajouter la logique pour envoyer les données au backend
         Alert.alert('Succès', 'Profil mis à jour avec succès !');
     };
 
     return (
-        <ParallaxScrollView
-            headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-            headerImage={(
-                <IconSymbol
-                    size={310}
-                    color="#808080"
-                    name="chevron.left.forwardslash.chevron.right"
-                    style={styles.headerImage}
+        <View style={[styles.container, isDarkMode && styles.containerDark]}>
+            <ThemedText type="defaultSemiBold" style={[styles.title, isDarkMode && styles.textDark]}>
+                Modifier mon profil
+            </ThemedText>
+
+            <View style={styles.inputContainer}>
+                <ThemedText type="default" style={isDarkMode && styles.textDark}>Nom</ThemedText>
+                <TextInput
+                    style={[styles.input, isDarkMode && styles.inputDark]}
+                    value={name}
+                    onChangeText={setName}
+                    placeholder="Votre nom"
+                    placeholderTextColor={isDarkMode ? "#bbb" : "#666"}
+                    autoCapitalize="words"
                 />
-            )}
-        >
-            <View style={styles.container}>
-                <ThemedText type="defaultSemiBold" style={styles.title}>
-                    Modifier mon profil
-                </ThemedText>
 
-                <View style={styles.inputContainer}>
-                    <ThemedText type="default">Nom</ThemedText>
-                    <TextInput
-                        style={styles.input}
-                        value={name}
-                        onChangeText={setName}
-                        placeholder="Votre nom"
-                        autoCapitalize="words"
+                <ThemedText type="default" style={isDarkMode && styles.textDark}>Adresse email</ThemedText>
+                <TextInput
+                    style={[styles.input, isDarkMode && styles.inputDark]}
+                    value={email}
+                    onChangeText={setEmail}
+                    placeholder="Votre email"
+                    placeholderTextColor={isDarkMode ? "#bbb" : "#666"}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                />
+
+                <ThemedText type="default" style={isDarkMode && styles.textDark}>Nouveau mot de passe</ThemedText>
+                <TextInput
+                    style={[styles.input, isDarkMode && styles.inputDark]}
+                    value={password}
+                    onChangeText={setPassword}
+                    placeholder="Nouveau mot de passe"
+                    placeholderTextColor={isDarkMode ? "#bbb" : "#666"}
+                    secureTextEntry
+                />
+
+                <ThemedText type="default" style={isDarkMode && styles.textDark}>Confirmer le mot de passe</ThemedText>
+                <TextInput
+                    style={[styles.input, isDarkMode && styles.inputDark]}
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    placeholder="Confirmer le mot de passe"
+                    placeholderTextColor={isDarkMode ? "#bbb" : "#666"}
+                    secureTextEntry
+                />
+
+                <View style={styles.buttonContainer}>
+                    <Button 
+                        title="Enregistrer les modifications"
+                        onPress={handleSubmit}
+                        color={isDarkMode ? "#bbb" : "#333333"}
                     />
-
-                    <ThemedText type="default">Adresse email</ThemedText>
-                    <TextInput
-                        style={styles.input}
-                        value={email}
-                        onChangeText={setEmail}
-                        placeholder="Votre email"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                    />
-
-                    <ThemedText type="default">Nouveau mot de passe</ThemedText>
-                    <TextInput
-                        style={styles.input}
-                        value={password}
-                        onChangeText={setPassword}
-                        placeholder="Nouveau mot de passe"
-                        secureTextEntry
-                    />
-
-                    <ThemedText type="default">Confirmer le mot de passe</ThemedText>
-                    <TextInput
-                        style={styles.input}
-                        value={confirmPassword}
-                        onChangeText={setConfirmPassword}
-                        placeholder="Confirmer le mot de passe"
-                        secureTextEntry
-                    />
-
-                    <View style={styles.buttonContainer}>
-                        <Button 
-                            title="Enregistrer les modifications"
-                            onPress={handleSubmit}
-                        />
-                    </View>
                 </View>
             </View>
-        </ParallaxScrollView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    headerImage: {
-        color: '#808080',
-        bottom: -90,
-        left: -35,
-        position: 'absolute',
-    },
-    titleContainer: {
-        flexDirection: 'row',
-        gap: 8,
-    },
     container: {
         padding: 16,
+        backgroundColor: "#fff",
+    },
+    containerDark: {
+        backgroundColor: "#121212",
     },
     title: {
         fontSize: 24,
         marginBottom: 20,
+        color: "#000",
+    },
+    textDark: {
+        color: "#fff",
     },
     inputContainer: {
         gap: 10,
     },
     input: {
         borderWidth: 1,
-        borderColor: '#ccc',
+        borderColor: "#ccc",
         borderRadius: 8,
         padding: 12,
-        backgroundColor: '#fff',
+        backgroundColor: "#fff",
+        color: "#000",
         marginBottom: 15,
+    },
+    inputDark: {
+        borderColor: "#555",
+        backgroundColor: "#222",
+        color: "#fff",
     },
     buttonContainer: {
         marginTop: 20,
+		borderRadius: 12,
     }
 });

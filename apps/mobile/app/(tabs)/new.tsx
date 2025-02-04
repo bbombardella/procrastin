@@ -1,22 +1,21 @@
-import ParallaxScrollView from '../../components/ParallaxScrollView';
-import { ThemedText } from '../../components/ThemedText';
-import { IconSymbol } from '../../components/ui/IconSymbol';
 import { useState } from 'react';
-import { Alert, Button, Image, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, TouchableOpacity, Image, StyleSheet, TextInput, View, Text, useColorScheme } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { ThemedText } from '../../components/ThemedText';
 
 export default function NewPostScreen() {
     const [description, setDescription] = useState("");
     const [image, setImage] = useState<string | null>(null);
 
-    // Fonction pour soumettre le post
+    const colorScheme = useColorScheme();
+    const isDarkMode = colorScheme === 'dark';
+
     const handleSubmit = () => {
         if (!description) {
             Alert.alert("Erreur", "Veuillez remplir tous les champs.");
             return;
         }
         Alert.alert("Succès", "Votre post a été créé !");
-        // Ici, tu peux envoyer les données à ton backend ou les ajouter à la liste des posts
     };
 
     const pickImage = async () => {
@@ -37,73 +36,99 @@ export default function NewPostScreen() {
     };
 
     return (
-        <ParallaxScrollView
-            headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-            headerImage={(
-                <IconSymbol
-                    size={310}
-                    color="#808080"
-                    name="chevron.left.forwardslash.chevron.right"
-                    style={styles.headerImage}
-                />
-            )}
-        >
-            <ThemedText type="defaultSemiBold">Créer un Nouveau Post</ThemedText>
-            <View style={styles.container}>
-                <View style={styles.container}>
-                    <Button title="Pick an image from camera roll" onPress={pickImage} />
-                    {image && <Image source={{ uri: image }} style={styles.postImage} />}
-                </View>
+        <View style={[styles.container, isDarkMode && styles.containerDark]}>
+            <ThemedText type="defaultSemiBold" style={[styles.title, isDarkMode && styles.textDark]}>
+                Créer un Nouveau Post
+            </ThemedText>
 
-                <TextInput
-                    style={[styles.input, styles.textArea]}
-                    placeholder="Description du post"
-                    value={description}
-                    onChangeText={setDescription}
-                    multiline
-                />
-                <Button title="Publier" onPress={handleSubmit} />
-            </View>
-        </ParallaxScrollView>
+            <TextInput
+                style={[styles.input, styles.textArea, isDarkMode && styles.inputDark]}
+                placeholder="Description du post"
+                placeholderTextColor={isDarkMode ? "#bbb" : "#666"}
+                value={description}
+                onChangeText={setDescription}
+                multiline
+            />
+
+            <TouchableOpacity style={[styles.button, isDarkMode && styles.buttonDark]} onPress={pickImage}>
+                <Text style={styles.buttonText}>Choisir une image</Text>
+            </TouchableOpacity>
+
+            {image && <Image source={{ uri: image }} style={styles.postImage} />}
+
+            <TouchableOpacity style={[styles.button, styles.publishButton]} onPress={handleSubmit}>
+                <Text style={styles.buttonText}>Publier</Text>
+            </TouchableOpacity>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    headerImage: {
-        color: "#808080",
-        bottom: -90,
-        left: -35,
-        position: "absolute",
-    },
     container: {
-        padding: 16,
+        padding: 20,
+        backgroundColor: "#fff",
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    containerDark: {
+        backgroundColor: "#121212",
+    },
+    title: {
+        fontSize: 24,
+        marginBottom: 20,
+        color: "#000",
+        fontWeight: "bold",
+    },
+    textDark: {
+        color: "#fff",
     },
     input: {
         borderWidth: 1,
         borderColor: "#ccc",
-        borderRadius: 8,
-        padding: 10,
+        borderRadius: 12,
+        padding: 12,
         fontSize: 16,
         marginBottom: 10,
         backgroundColor: "#fff",
+        color: "#000",
+        width: "100%",
+    },
+    inputDark: {
+        borderColor: "#555",
+        backgroundColor: "#222",
+        color: "#fff",
     },
     textArea: {
-        height: 100,
+        height: 120,
         textAlignVertical: "top",
     },
     postImage: {
-        backgroundColor: "#ddd",
-        width: 200,
-        height: 200,
-        padding: 12,
-        borderRadius: 8,
-        alignItems: "center",
-        marginBottom: 10,
-    },
-    previewImage: {
         width: "100%",
         height: 200,
-        borderRadius: 8,
-        marginBottom: 10,
+        borderRadius: 12,
+        marginTop: 10,
+        resizeMode: "cover",
+    },
+    button: {
+        marginTop: 15,
+        paddingVertical: 14,
+        paddingHorizontal: 20,
+        borderRadius: 12,
+        backgroundColor: "#007BFF",
+        width: "100%",
+        alignItems: "center",
+    },
+    buttonDark: {
+        backgroundColor: "#333333",
+    },
+    publishButton: {
+        backgroundColor: "#28a745",
+        marginTop: 20,
+    },
+    buttonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
     },
 });

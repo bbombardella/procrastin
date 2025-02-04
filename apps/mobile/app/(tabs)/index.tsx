@@ -1,5 +1,4 @@
-import ParallaxScrollView from '../../components/ParallaxScrollView';
-import { FlatList, Image, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View, useColorScheme } from 'react-native';
 import Post from '../../components/Post';
 
 const posts = [
@@ -18,54 +17,65 @@ const posts = [
 ];
 
 export default function HomeScreen() {
-	return (
-        <ParallaxScrollView
-            headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-            headerImage={
-                <Image
-                    source={require('../../assets/images/partial-react-logo.png')}
-                    style={styles.reactLogo}
-                />
-            }
-        >
-            <View style={styles.container}>
-                <FlatList
-                    data={posts}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => (
-                        <Post
-							id={item.id}
-                            profileName={item.profileName}
-                            imageUrl={item.imageUrl}
-                            description={item.description}
-                        />
-                    )}
-                    showsVerticalScrollIndicator={false}
-                />
-            </View>
-        </ParallaxScrollView>
+    const colorScheme = useColorScheme();
+    const isDarkMode = colorScheme === 'dark';
+
+    return (
+        <View style={[
+            styles.container, 
+            isDarkMode && styles.containerDark
+        ]}>
+            <FlatList
+                data={posts}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                    <Post
+                        id={item.id}
+                        profileName={item.profileName}
+                        imageUrl={item.imageUrl}
+                        description={item.description}
+                    />
+                )}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={[
+                    styles.listContent,
+                    isDarkMode && styles.listContentDark
+                ]}
+            />
+        </View>
     );
 }
 
-
 const styles = StyleSheet.create({
-	container: {
-		padding: 16,
-	},
-	reactLogo: {
-		height: 178,
-		width: 290,
-		bottom: 0,
-		left: 0,
-		position: 'absolute',
-	},
-	titleContainer: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 8,
-	},
-	stepContainer: {
-		gap: 8,
-		marginBottom: 8,
-	},
+    container: {
+        flex: 1,
+        padding: 16,
+        backgroundColor: '#fff',
+    },
+    containerDark: {
+        backgroundColor: '#121212',
+    },
+    listContent: {
+        gap: 16,
+        paddingBottom: 16,
+    },
+    listContentDark: {
+        backgroundColor: '#121212',
+    },
+    reactLogo: {
+        height: 178,
+        width: 290,
+        bottom: 0,
+        left: 0,
+        position: 'absolute',
+    },
+    titleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
+    stepContainer: {
+        gap: 8,
+        marginBottom: 8,
+    },
 });
