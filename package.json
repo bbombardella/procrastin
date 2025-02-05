@@ -5,7 +5,9 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "prisma:init": "npm run prisma:generate && npm run prisma:deploy",
     "prisma:generate": "dotenv -e ./packages/prisma/.env -- prisma generate --schema=./packages/prisma/src/schema.prisma",
+    "prisma:deploy": "dotenv -e ./packages/prisma/.env -- prisma migrate deploy --schema=./packages/prisma/src/schema.prisma",
     "prisma:migrate": "dotenv -e ./packages/prisma/.env -- prisma migrate dev --schema=./packages/prisma/src/schema.prisma"
   },
   "private": true,
