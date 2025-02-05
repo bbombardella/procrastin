@@ -22,16 +22,19 @@ import {Button, ButtonText} from '../../components/ui/button';
 import {HStack} from '../../components/ui/hstack';
 import {useToast} from '../../components/ui/toast';
 import {ErrorToast} from '../../components/ui/error-toast';
+import {queryClient} from '../../libs/http';
+import {Textarea, TextareaInput} from '../../components/ui/textarea';
 
 const signupSchema = z.object({
     firstName: z.string().min(2, 'First name must be at least 2 characters long'),
     lastName: z.string().min(2, 'Last name must be at least 2 characters long'),
+    description: z.string().max(500, 'Description must not exceed 500 characters').default(''),
     email: z.string().email('Invalid email address'),
     password: z.string().min(6, 'Password must be at least 6 characters long'),
 })
 
 export default function SignUp() {
-    const {signUp, signInWithPassword} = useSupabase()
+    const {signUp} = useSupabase()
     const toast = useToast()
 
     const [toastId, setToastId] = useState<string>('')
@@ -43,6 +46,7 @@ export default function SignUp() {
         defaultValues: {
             firstName: '',
             lastName: '',
+            description: '',
             email: '',
             password: '',
         },
@@ -65,12 +69,23 @@ export default function SignUp() {
         }
     }
 
-    const onSubmit = async (data: z.infer<typeof signupSchema>) => {
+    const onSubmit = async ({firstName, lastName, description, email, password}: z.infer<typeof signupSchema>) => {
         try {
-            await signUp(data.email, data.password)
-            form.reset()
+            await signUp(email, password)
 
-            await signInWithPassword(data.email, data.password)
+            await queryClient.users.createUser.mutation(
+                {
+                    body: {
+                        firstName,
+                        lastName,
+                        email,
+                        description,
+                        profilePictureUrl: ''
+                    }
+                }
+            )
+
+            form.reset()
         } catch (error: Error | any) {
             handleToast(error)
             console.log(error.message)
@@ -165,6 +180,39 @@ export default function SignUp() {
                                 )}
                             />
                         </HStack>
+
+                        <Controller
+                            control={form.control}
+                            name="description"
+                            render={({field: {onChange, onBlur, value}}) => (
+                                <FormControl
+                                    isInvalid={!!form.formState.errors.description}
+                                    size="md"
+                                    className="mt-4"
+                                >
+                                    <FormControlLabel>
+                                        <FormControlLabelText>Description</FormControlLabelText>
+                                    </FormControlLabel>
+                                    <Textarea
+                                        size="lg"
+                                        className="my-1"
+                                    >
+                                        <TextareaInput placeholder="A short description"
+                                                       value={value}
+                                                       onChangeText={onChange}
+                                                       onBlur={onBlur} />
+                                    </Textarea>
+                                    <FormControlHelper>
+                                        <FormControlHelperText>Provide a short description about yourself (must not exceed 500 characters).</FormControlHelperText>
+                                    </FormControlHelper>
+                                    <FormControlError>
+                                        <FormControlErrorText>
+                                            {form.formState.errors.description?.message}
+                                        </FormControlErrorText>
+                                    </FormControlError>
+                                </FormControl>
+                            )}
+                        />
 
                         <Controller
                             control={form.control}
