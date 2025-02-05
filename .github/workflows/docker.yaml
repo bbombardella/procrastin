@@ -1,0 +1,48 @@
+name: Push API Docker Image
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'infra/docker/api.Dockerfile'
+      - 'apps/api/**'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract version
+        id: meta
+        run: |
+          VERSION=${GITHUB_SHA::7}
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: infra/docker/api.Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/procrastin-api:${{ steps.meta.outputs.version }}
+            ghcr.io/${{ github.repository_owner }}/procrastin-api:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

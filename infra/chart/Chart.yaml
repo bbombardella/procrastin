@@ -1,0 +1,11 @@
+apiVersion: v2
+name: procrastin
+version: 0.0.0
+dependencies:
+  - alias: procrastin
+    name: app-template
+    repository: https://bjw-s.github.io/helm-charts
+    version: 3.2.1
+  - name: longhorn-volume-manager
+    repository: oci://registry-1.docker.io/barthodev
+    version: 0.1.20

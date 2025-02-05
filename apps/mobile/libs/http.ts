@@ -1,12 +1,12 @@
-// import { environment } from '@procrastin/environment'
 // import { AuthService } from '@cinestia/web/auth'
 import { contract } from '@procrastin/contract'
+import { environment } from '@procrastin/environment'
 import { ClientArgs, initClient } from '@ts-rest/core'
 import { initQueryClient } from '@ts-rest/react-query'
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, isAxiosError, Method } from 'axios'
 
 const clientArgs: ClientArgs = {
-	baseUrl: "http://localhost:3000",
+	baseUrl: environment.apiBaseUrl,
 	baseHeaders: {
 		'Content-Type': 'application/json',
 	},
