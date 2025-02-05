@@ -38,7 +38,7 @@ export default function RootLayout() {
 
 	return (
 		<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-			<GluestackUIProvider>
+			<GluestackUIProvider colorScheme={colorScheme}>
 				<QueryClientProvider client={client}>
 					<SupabaseProvider>
 						<Stack>
