@@ -1,15 +1,18 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import 'react-native-reanimated'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import { useEffect } from 'react'
-import { SupabaseProvider } from '../context/supabase-provider'
+
+import {GluestackUIProvider} from '../components/ui/gluestack-ui-provider';
+import {SupabaseProvider, useSupabase} from '../context/supabase-provider'
 import { useColorScheme } from '../hooks/useColorScheme'
 
-import 'react-native-reanimated'
+import "../global.css"
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
@@ -18,15 +21,16 @@ const client = new QueryClient()
 
 export default function RootLayout() {
 	const colorScheme = useColorScheme()
+	const { initialized } = useSupabase()
 	const [loaded] = useFonts({
 		SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
 	})
 
 	useEffect(() => {
-		if (loaded) {
+		if (loaded && initialized) {
 			SplashScreen.hideAsync()
 		}
-	}, [loaded])
+	}, [loaded, initialized])
 
 	if (!loaded) {
 		return null
@@ -34,17 +38,18 @@ export default function RootLayout() {
 
 	return (
 		<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-			<QueryClientProvider client={client}>
-				<SupabaseProvider>
-					<Stack>
-						<Stack.Screen name="(public)/sign-in" options={{ headerShown: false, title: 'Sign In' }} />
-						<Stack.Screen name="(public)/sign-up" options={{ title: 'Sign Up' }} />
-						<Stack.Screen name="(protected)" options={{ headerShown: false }} />
-						<Stack.Screen name="+not-found" />
-					</Stack>
-					<StatusBar style="auto" />
-				</SupabaseProvider>
-			</QueryClientProvider>
+			<GluestackUIProvider colorScheme={colorScheme}>
+				<QueryClientProvider client={client}>
+					<SupabaseProvider>
+						<Stack>
+							<Stack.Screen name="(public)" options={{ headerShown: false }} />
+							<Stack.Screen name="(protected)" options={{ headerShown: false }} />
+							<Stack.Screen name="+not-found" />
+						</Stack>
+						<StatusBar style="auto" />
+					</SupabaseProvider>
+				</QueryClientProvider>
+			</GluestackUIProvider>
 		</ThemeProvider>
 	)
 }
