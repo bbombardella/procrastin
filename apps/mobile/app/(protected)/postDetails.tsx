@@ -1,4 +1,5 @@
 import { FlatList, Image, StyleSheet, Text, View, useColorScheme } from "react-native";
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const post = {
     profileName: "John Doe",
@@ -16,7 +17,7 @@ export default function PostDetails() {
     const isDarkMode = colorScheme === 'dark';
 
     return (
-        <View style={[styles.container, isDarkMode && styles.containerDark]}>
+        <SafeAreaView style={[styles.container, isDarkMode && styles.containerDark]}>
             <Text style={[styles.profileName, isDarkMode && styles.textDark]}>
                 {post.profileName}
             </Text>
@@ -41,7 +42,7 @@ export default function PostDetails() {
                     </View>
                 )}
             />
-        </View>
+        </SafeAreaView>
     );
 }
 

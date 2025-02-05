@@ -1,8 +1,12 @@
 import { StyleSheet, View, TextInput, Button, Alert, useColorScheme } from 'react-native';
 import { useState } from 'react';
-import { ThemedText } from '../../components/ThemedText';
+import { ThemedText } from '../../../components/ThemedText';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useSupabase} from '../../../context/supabase-provider';
 
-export default function Profil() {
+export default function Profile() {
+    const { signOut } = useSupabase()
+
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -10,6 +14,14 @@ export default function Profil() {
 
     const colorScheme = useColorScheme();
     const isDarkMode = colorScheme === 'dark';
+
+    async function disconnect() {
+        try {
+            await signOut()
+        } catch (error: Error | any) {
+            console.log(error.message)
+        }
+    }
 
     const handleSubmit = () => {
         if (!name || !email || !password || !confirmPassword) {
@@ -26,7 +38,7 @@ export default function Profil() {
     };
 
     return (
-        <View style={[styles.container, isDarkMode && styles.containerDark]}>
+        <SafeAreaView style={[styles.container, isDarkMode && styles.containerDark]}>
             <ThemedText type="defaultSemiBold" style={[styles.title, isDarkMode && styles.textDark]}>
                 Modifier mon profil
             </ThemedText>
@@ -79,9 +91,11 @@ export default function Profil() {
                         onPress={handleSubmit}
                         color={isDarkMode ? "#bbb" : "#333333"}
                     />
+
+                    <Button title="Sign Out" onPress={disconnect} />
                 </View>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 

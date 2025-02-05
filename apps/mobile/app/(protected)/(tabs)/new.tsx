@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Alert, TouchableOpacity, Image, StyleSheet, TextInput, View, Text, useColorScheme } from 'react-native';
+import { Alert, TouchableOpacity, Image, StyleSheet, TextInput, Text, useColorScheme } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { ThemedText } from '../../components/ThemedText';
+import { ThemedText } from '../../../components/ThemedText';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export default function NewPostScreen() {
     const [description, setDescription] = useState("");
@@ -36,7 +37,7 @@ export default function NewPostScreen() {
     };
 
     return (
-        <View style={[styles.container, isDarkMode && styles.containerDark]}>
+        <SafeAreaView style={[styles.container, isDarkMode && styles.containerDark]}>
             <ThemedText type="defaultSemiBold" style={[styles.title, isDarkMode && styles.textDark]}>
                 Créer un Nouveau Post
             </ThemedText>
@@ -59,7 +60,7 @@ export default function NewPostScreen() {
             <TouchableOpacity style={[styles.button, styles.publishButton]} onPress={handleSubmit}>
                 <Text style={styles.buttonText}>Publier</Text>
             </TouchableOpacity>
-        </View>
+        </SafeAreaView>
     );
 }
 

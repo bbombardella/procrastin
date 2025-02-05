@@ -1,5 +1,6 @@
-import { FlatList, StyleSheet, View, useColorScheme } from 'react-native';
-import Post from '../../components/Post';
+import { FlatList, StyleSheet, useColorScheme } from 'react-native';
+import Post from '../../../components/Post';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const posts = [
     {
@@ -21,7 +22,7 @@ export default function HomeScreen() {
     const isDarkMode = colorScheme === 'dark';
 
     return (
-        <View style={[
+        <SafeAreaView style={[
             styles.container, 
             isDarkMode && styles.containerDark
         ]}>
@@ -42,7 +43,7 @@ export default function HomeScreen() {
                     isDarkMode && styles.listContentDark
                 ]}
             />
-        </View>
+        </SafeAreaView>
     );
 }
 

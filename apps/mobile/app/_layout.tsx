@@ -44,7 +44,6 @@ export default function RootLayout() {
 						<Stack>
 							<Stack.Screen name="(public)" options={{ headerShown: false }} />
 							<Stack.Screen name="(protected)" options={{ headerShown: false }} />
-                            <Stack.Screen name="postDetails" options={{ title: "Post" }}/>
 							<Stack.Screen name="+not-found" />
 						</Stack>
 						<StatusBar style="auto" />
