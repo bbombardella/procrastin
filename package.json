@@ -43,6 +43,7 @@
     "zod-prisma-types": "^3.2.1"
   },
   "dependencies": {
+    "@expo/html-elements": "^0.4.2",
     "@expo/metro-config": "~0.19.4",
     "@expo/metro-runtime": "~4.0.0",
     "@expo/vector-icons": "^14.0.2",
@@ -60,6 +61,7 @@
     "@gluestack-ui/overlay": "^0.1.16",
     "@gluestack-ui/toast": "^1.0.8",
     "@hookform/resolvers": "^3.10.0",
+    "@legendapp/motion": "^2.4.0",
     "@prisma/client": "^5.22.0",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native/js-polyfills": "^0.77.0",
