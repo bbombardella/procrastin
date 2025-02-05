@@ -20,6 +20,8 @@ import {Input, InputField, InputIcon, InputSlot} from '../../components/ui/input
 import {EyeIcon, EyeOffIcon} from '../../components/ui/icon';
 import {Button, ButtonText} from '../../components/ui/button';
 import {HStack} from '../../components/ui/hstack';
+import {useToast} from '../../components/ui/toast';
+import {ErrorToast} from '../../components/ui/error-toast';
 
 const signupSchema = z.object({
     firstName: z.string().min(2, 'First name must be at least 2 characters long'),
@@ -30,6 +32,9 @@ const signupSchema = z.object({
 
 export default function SignUp() {
     const {signUp, signInWithPassword} = useSupabase()
+    const toast = useToast()
+
+    const [toastId, setToastId] = useState<string>('')
     const [showPassword, setShowPassword] = useState(false)
 
     const form = useForm<z.infer<typeof signupSchema>>({
@@ -43,6 +48,23 @@ export default function SignUp() {
         },
     })
 
+    const showNewToast = (error: Error) => {
+        const uniqueToastId = `toast-${Math.random()}`
+        setToastId(uniqueToastId)
+        toast.show({
+            id: uniqueToastId,
+            placement: "top",
+            duration: 5000,
+            render: ({id}) => (<ErrorToast uniqueToastId={id} message={error.message} onClose={() => toast.close(id)}/>)
+        })
+    }
+
+    const handleToast = (error: Error) => {
+        if (!toast.isActive(toastId)) {
+            showNewToast(error)
+        }
+    }
+
     const onSubmit = async (data: z.infer<typeof signupSchema>) => {
         try {
             await signUp(data.email, data.password)
@@ -50,6 +72,7 @@ export default function SignUp() {
 
             await signInWithPassword(data.email, data.password)
         } catch (error: Error | any) {
+            handleToast(error)
             console.log(error.message)
         }
     }

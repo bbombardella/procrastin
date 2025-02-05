@@ -23,6 +23,8 @@ import {Heading} from '../../components/ui/heading';
 import {KeyboardAvoidingView, Platform, View} from 'react-native';
 import {useState} from 'react';
 import {EyeIcon, EyeOffIcon} from '../../components/ui/icon';
+import {ErrorToast} from '../../components/ui/error-toast';
+import {useToast} from '../../components/ui/toast';
 
 const formSchema = z.object({
     email: z.string().email('Please enter a valid email address.'),
@@ -34,6 +36,10 @@ const formSchema = z.object({
 
 export default function SignIn() {
     const {signInWithPassword} = useSupabase()
+    const toast = useToast()
+
+    const [toastId, setToastId] = useState<string>('')
+    const [showPassword, setShowPassword] = useState(false)
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -43,7 +49,22 @@ export default function SignIn() {
         },
     })
 
-    const [showPassword, setShowPassword] = useState(false)
+    const showNewToast = (error: Error) => {
+        const uniqueToastId = `toast-${Math.random()}`
+        setToastId(uniqueToastId)
+        toast.show({
+            id: uniqueToastId,
+            placement: "top",
+            duration: 5000,
+            render: ({id}) => (<ErrorToast uniqueToastId={id} message={error.message} onClose={() => toast.close(id)}/>)
+        })
+    }
+
+    const handleToast = (error: Error) => {
+        if (!toast.isActive(toastId)) {
+            showNewToast(error)
+        }
+    }
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
         try {
@@ -51,6 +72,7 @@ export default function SignIn() {
 
             form.reset()
         } catch (error: Error | any) {
+            handleToast(error)
             console.log(error.message)
         }
     }
