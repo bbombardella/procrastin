@@ -1,4 +1,4 @@
-import {Alert, KeyboardAvoidingView, Platform, RefreshControl, ScrollView} from 'react-native';
+import {KeyboardAvoidingView, Platform, RefreshControl, ScrollView} from 'react-native';
 import {useSupabase} from '../../../context/supabase-provider';
 import {VStack} from '../../../components/ui/vstack';
 import {Avatar, AvatarBadge, AvatarFallbackText, AvatarImage} from '../../../components/ui/avatar';
@@ -18,13 +18,15 @@ import {Input, InputField} from '../../../components/ui/input';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Textarea, TextareaInput} from '../../../components/ui/textarea';
 import {CloseIcon, EditIcon, LockIcon} from '../../../components/ui/icon';
-import {Button, ButtonIcon, ButtonText} from '../../../components/ui/button';
+import {Button, ButtonIcon, ButtonSpinner, ButtonText} from '../../../components/ui/button';
 import {Spinner} from '../../../components/ui/spinner';
 import {queryClient} from '../../../libs/http';
 import {useState} from 'react';
 import {useToast} from '../../../components/ui/toast';
 import {SuccessToast} from '../../../components/ui/success-toast';
 import {ErrorToast} from '../../../components/ui/error-toast';
+import {Text} from '../../../components/ui/text';
+import {Link} from 'expo-router';
 
 const userInfoSchema = z.object({
     firstName: z.string().min(2, 'First name must be at least 2 characters long'),
@@ -40,6 +42,7 @@ export default function Profile() {
     const [toastId, setToastId] = useState<string>('')
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
+    const [submitting, setSubmitting] = useState(false)
 
     const fetchUserInfo = async () => {
         setLoading(true)
@@ -89,6 +92,7 @@ export default function Profile() {
 
     const handleSubmit = async (data: z.infer<typeof userInfoSchema>) => {
         try {
+            setRefreshing(true)
             const {body} = await queryClient.users.updateUser.mutation({
                 params: {id: '1'},
                 body: {...data}
@@ -105,9 +109,9 @@ export default function Profile() {
         } catch (error: Error | any) {
             showNewToast(error.message, true)
             console.error(error.message)
+        } finally {
+            setSubmitting(false)
         }
-
-        Alert.alert('Succès', 'Profil mis à jour avec succès !');
     };
 
     const onRefresh = async () => form.reset(await fetchUserInfo())
@@ -248,25 +252,39 @@ export default function Profile() {
                                 )}
                             />
 
-                            <HStack className="gap-4">
-                                <Button className="flex-1 mt-4" size="md" action="negative"
+                            <HStack className="gap-4 mt-4">
+                                <Button className="flex-1" size="md" action="negative"
                                         onPress={() => form.reset()} isDisabled={!form.formState.isDirty}>
                                     <ButtonIcon as={CloseIcon} className="mr-2"/>
                                     <ButtonText>Reset</ButtonText>
                                 </Button>
 
-                                <Button className="flex-1 mt-4" size="md" action="positive"
-                                        isDisabled={!form.formState.isDirty}
+                                <Button className="flex-1" size="md" action="positive"
+                                        isDisabled={!form.formState.isDirty || !form.formState.isValid || submitting}
                                         onPress={form.handleSubmit(handleSubmit)}>
-                                    <ButtonIcon as={EditIcon} className="mr-2"/>
+                                    {submitting ?
+                                        <ButtonSpinner/>
+                                        :
+                                        <ButtonIcon as={EditIcon} className="mr-2"/>
+                                    }
                                     <ButtonText>Edit my profile!</ButtonText>
                                 </Button>
                             </HStack>
 
-                            <Button className="w-full mt-4" size="md" action="secondary" onPress={disconnect}>
-                                <ButtonIcon as={LockIcon} className="mr-2"/>
-                                <ButtonText>Log out</ButtonText>
-                            </Button>
+                            <HStack className="gap-4 mt-4">
+                                <Button className="flex-1" size="md" action="secondary">
+                                    <ButtonIcon as={LockIcon} className="mr-2"/>
+
+                                    <Link href="../passwordEdition">
+                                        <Text className="font-medium">Edit my password</Text>
+                                    </Link>
+                                </Button>
+
+                                <Button className="flex-1" size="md"
+                                        action="primary" variant="outline" onPress={disconnect}>
+                                    <ButtonText>Log out</ButtonText>
+                                </Button>
+                            </HStack>
                         </>
                     }
                 </VStack>
