@@ -32,7 +32,7 @@ export const usersRouter = s.router(contract.users, {
 		})
 
 		return {
-			status: 200,
+			status: 201,
 			body: user,
 		}
 	},

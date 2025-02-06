@@ -12,6 +12,7 @@ export const usersContract = c.router(
 			summary: 'Get all users',
 			responses: {
 				200: UserSchema.array(),
+				404: c.type<string>()
 			},
 		},
 		getUser: {
@@ -55,6 +56,7 @@ export const usersContract = c.router(
 			summary: 'Get current user',
 			responses: {
 				200: UserSchema,
+				404: c.type<string>()
 			},
 		},
 	},
