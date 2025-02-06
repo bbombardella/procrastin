@@ -13,7 +13,7 @@ const MAPPING = {
 	'paperplane.fill': 'send',
 	'chevron.left.forwardslash.chevron.right': 'code',
 	'chevron.right': 'chevron-right',
-	'plus.circle.fill': 'add-circle-outline',
+	'plus': 'add',
 	'person.circle.fill': 'account-circle',
 	'heart':'favorite-border',
 	'heart.fill':'favorite',

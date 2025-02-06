@@ -4,20 +4,18 @@ import { Link } from "expo-router";
 import { VStack } from "./ui/vstack";
 import { HStack } from "./ui/hstack";
 import { Text } from "./ui/text";
-import { Box } from "./ui/box";
-import { Image } from "./ui/image";
-import { Pressable } from "react-native";
+import { Dimensions, Image, Pressable } from "react-native";
 import { Avatar, AvatarFallbackText, AvatarImage } from "./ui/avatar";
+import { Box } from "./ui/box";
 
 export default function Post({ id, profileName, imageUrl, description }) {
     const [liked, setLiked] = useState(false);
 
     return (
-        <VStack className="w-full pb-4" space="md">
+        <VStack className="w-full p-4" space="md">
             <HStack 
                 space="sm" 
                 alignItems="center"
-                className="p-2"
             >
                 <Avatar size="md">
                     <AvatarFallbackText>Jane Doe</AvatarFallbackText>
@@ -31,17 +29,31 @@ export default function Post({ id, profileName, imageUrl, description }) {
                     {profileName}
                 </Text>
             </HStack>
-            <Box alignItems="center">
+            <VStack>
+                <Text>
+                    {description}
+                </Text>
+                <Box
+                    className="w-full"
+                    alignItems="center"
+                >
                 <Image
                     source={{ uri: imageUrl }}
-                    alt="postImage"
-                    size="none"
-                    className="aspect-[320/208] w-full max-w-[320px]"
+                    style={{
+                        width: Dimensions.get('window').width-50,
+                        height: undefined,
+                        aspectRatio: 16 / 9,
+                        marginVertical: 10,
+                      }}
+                    
+                    resizeMode="cover" 
                 />
+                </Box>
                 <HStack
-                    justifyContent="space-around"
+                    className="w-full"
                     alignItems="center"
-                    className="p-2 w-full"
+                    justifyContent="flex-start"
+                    space="xl"
                 >
                     <Pressable onPress={() => setLiked(!liked)}>
                         <MaterialIcons 
@@ -59,10 +71,7 @@ export default function Post({ id, profileName, imageUrl, description }) {
                         />
                     </Link>
                 </HStack> 
-                <Text >
-                    {description}
-                </Text>
-            </Box>
+            </VStack>
         </VStack>
     );
 }
