@@ -48,7 +48,7 @@ export default function RootLayout() {
                                 <Stack.Screen name="(protected)" options={{headerShown: false}}/>
                                 <Stack.Screen name="+not-found"/>
                             </Stack>
-                            <StatusBar style="auto"/>
+                            <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'}/>
                         </SafeAreaProvider>
                     </SupabaseProvider>
                 </QueryClientProvider>
