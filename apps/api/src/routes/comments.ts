@@ -32,7 +32,7 @@ export const commentsRouter = s.router(contract.comments, {
 		})
 
 		return {
-			status: 200,
+			status: 201,
 			body: comment,
 		}
 	},

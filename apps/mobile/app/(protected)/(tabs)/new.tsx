@@ -1,22 +1,87 @@
-import { useState } from 'react';
-import { Alert, TouchableOpacity, Image, StyleSheet, TextInput, Text, useColorScheme } from 'react-native';
+import {Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { ThemedText } from '../../../components/ThemedText';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {Heading} from '../../../components/ui/heading';
+import {z} from 'zod';
+import {Controller, useForm} from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {
+    FormControl,
+    FormControlError,
+    FormControlErrorText,
+    FormControlHelper,
+    FormControlHelperText,
+    FormControlLabel,
+    FormControlLabelText
+} from '../../../components/ui/form-control';
+import {Input, InputField} from '../../../components/ui/input';
+import {VStack} from '../../../components/ui/vstack';
+import {Textarea, TextareaInput} from '../../../components/ui/textarea';
+import {Button, ButtonIcon, ButtonSpinner, ButtonText} from '../../../components/ui/button';
+import {AddIcon, PlayIcon} from '../../../components/ui/icon';
+import {useBottomTabOverflow} from '../../../components/ui/TabBarBackground';
+import {useState} from 'react';
+import {queryClient} from '../../../libs/http';
+import {useToast} from '../../../components/ui/toast';
+import {showNewToast} from '../../../helper/show-toast.function';
+import {useRouter} from 'expo-router';
+
+const postSchema = z.object({
+    title: z.string().min(1, 'Please provide a title'),
+    content: z.string().min(1, 'Please provide a description'),
+    mediaUrl: z.string().min(1, 'Please provide an image')
+})
 
 export default function NewPostScreen() {
-    const [description, setDescription] = useState("");
-    const [image, setImage] = useState<string | null>(null);
+    const bottom = useBottomTabOverflow()
+    const toast = useToast()
+    const router = useRouter()
 
-    const colorScheme = useColorScheme();
-    const isDarkMode = colorScheme === 'dark';
+    const [toastId, setToastId] = useState('')
+    const [submitting, setSubmitting] = useState(false)
 
-    const handleSubmit = () => {
-        if (!description) {
-            Alert.alert("Erreur", "Veuillez remplir tous les champs.");
-            return;
+    const form = useForm<z.infer<typeof postSchema>>({
+        resolver: zodResolver(postSchema),
+        defaultValues: {
+            title: '',
+            content: '',
+            mediaUrl: ''
+        },
+    })
+
+    const showToast = showNewToast
+
+    const handleSubmit = async (data: z.infer<typeof postSchema>) => {
+        setSubmitting(true)
+
+        try {
+            //todo : upload image before
+            const result = await queryClient.posts.createPost.mutation({
+                body: {
+                    ...data,
+                    mediaUrl: '',
+                    author: {
+                        connect: {
+                            id: 1
+                        }
+                    }
+                }
+            })
+
+            if (result.status === 201) {
+                showToast(toast, 'Post created successfully!', setToastId)
+                form.reset()
+
+                router.navigate('/(protected)/(tabs)')
+            } else {
+                throw new Error('An error ocurred while creating the post.')
+            }
+        } catch (error: Error | any) {
+            showToast(toast, error.message, setToastId, true)
+            console.error(error.message)
+        } finally {
+            setSubmitting(false)
         }
-        Alert.alert("Succès", "Votre post a été créé !");
     };
 
     const pickImage = async () => {
@@ -29,107 +94,122 @@ export default function NewPostScreen() {
             });
 
             if (!result.canceled) {
-                setImage(result.assets[0].uri);
+                form.setValue('mediaUrl', result.assets[0].uri, {shouldDirty: true});
             }
-        } catch (error) {
-            Alert.alert("Erreur", "Une erreur est survenue lors de la sélection de l'image");
+        } catch (error: Error | any) {
+            showToast(toast, `Une erreur est survenue lors de la sélection de l'image : ${error.message}`, setToastId, true)
+            console.error(error.message)
         }
     };
 
     return (
-        <SafeAreaView style={[styles.container, isDarkMode && styles.containerDark]}>
-            <ThemedText type="defaultSemiBold" style={[styles.title, isDarkMode && styles.textDark]}>
-                Créer un Nouveau Post
-            </ThemedText>
+        <SafeAreaView className="flex-1">
+            <KeyboardAvoidingView style={{flex: 1}}
+                                  behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+                <ScrollView contentContainerStyle={{paddingBottom: bottom}}>
+                    <VStack className="w-full p-4">
+                        <Heading className="text-center" size="3xl">Create a new post</Heading>
 
-            <TextInput
-                style={[styles.input, styles.textArea, isDarkMode && styles.inputDark]}
-                placeholder="Description du post"
-                placeholderTextColor={isDarkMode ? "#bbb" : "#666"}
-                value={description}
-                onChangeText={setDescription}
-                multiline
-            />
+                        <Button className="mt-10" size="md"
+                                onPress={pickImage}>
+                            <ButtonIcon as={PlayIcon} className="mr-2"/>
+                            <ButtonText>Choose an image</ButtonText>
+                        </Button>
 
-            <TouchableOpacity style={[styles.button, isDarkMode && styles.buttonDark]} onPress={pickImage}>
-                <Text style={styles.buttonText}>Choisir une image</Text>
-            </TouchableOpacity>
+                        {form.watch('mediaUrl') &&
+                            <Image source={{uri: form.watch('mediaUrl')}} style={styles.postImage}/>}
 
-            {image && <Image source={{ uri: image }} style={styles.postImage} />}
+                        <Controller
+                            control={form.control}
+                            name="title"
+                            render={({field: {onChange, onBlur, value}}) => (
+                                <FormControl
+                                    isInvalid={!!form.formState.errors.title}
+                                    size="md"
+                                    isRequired={true}
+                                    className="mt-4"
+                                >
+                                    <FormControlLabel>
+                                        <FormControlLabelText>Title</FormControlLabelText>
+                                    </FormControlLabel>
+                                    <Input className="my-1" size="lg">
+                                        <InputField
+                                            type="text"
+                                            placeholder="Post's title"
+                                            value={value}
+                                            onChangeText={onChange}
+                                            onBlur={onBlur}
+                                        />
+                                    </Input>
+                                    <FormControlError>
+                                        <FormControlErrorText>
+                                            {form.formState.errors.title?.message}
+                                        </FormControlErrorText>
+                                    </FormControlError>
+                                </FormControl>
+                            )}
+                        />
 
-            <TouchableOpacity style={[styles.button, styles.publishButton]} onPress={handleSubmit}>
-                <Text style={styles.buttonText}>Publier</Text>
-            </TouchableOpacity>
+                        <Controller
+                            control={form.control}
+                            name="content"
+                            render={({field: {onChange, onBlur, value}}) => (
+                                <FormControl
+                                    isInvalid={!!form.formState.errors.content}
+                                    isRequired={true}
+                                    size="md"
+                                    className="mt-4"
+                                >
+                                    <FormControlLabel>
+                                        <FormControlLabelText>Content</FormControlLabelText>
+                                    </FormControlLabel>
+                                    <Textarea
+                                        size="lg"
+                                        className="my-1"
+                                        style={{height: 300}}
+                                    >
+                                        <TextareaInput placeholder="Post's content"
+                                                       textAlignVertical="top"
+                                                       value={value}
+                                                       onChangeText={onChange}
+                                                       style={{height: 300}}
+                                                       onBlur={onBlur}/>
+                                    </Textarea>
+                                    <FormControlHelper>
+                                        <FormControlHelperText>Describe your feelings!</FormControlHelperText>
+                                    </FormControlHelper>
+                                    <FormControlError>
+                                        <FormControlErrorText>
+                                            {form.formState.errors.content?.message}
+                                        </FormControlErrorText>
+                                    </FormControlError>
+                                </FormControl>
+                            )}
+                        />
+
+                        <Button className="mt-4" size="md" action="positive"
+                                isDisabled={!form.formState.isDirty || !form.formState.isValid || submitting}
+                                onPress={form.handleSubmit(handleSubmit)}>
+                            {submitting ?
+                                <ButtonSpinner/>
+                                :
+                                <ButtonIcon as={AddIcon} className="mr-2"/>
+                            }
+                            <ButtonText>Create my post!</ButtonText>
+                        </Button>
+                    </VStack>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        padding: 20,
-        backgroundColor: "#fff",
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    containerDark: {
-        backgroundColor: "#121212",
-    },
-    title: {
-        fontSize: 24,
-        marginBottom: 20,
-        color: "#000",
-        fontWeight: "bold",
-    },
-    textDark: {
-        color: "#fff",
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 12,
-        padding: 12,
-        fontSize: 16,
-        marginBottom: 10,
-        backgroundColor: "#fff",
-        color: "#000",
-        width: "100%",
-    },
-    inputDark: {
-        borderColor: "#555",
-        backgroundColor: "#222",
-        color: "#fff",
-    },
-    textArea: {
-        height: 120,
-        textAlignVertical: "top",
-    },
     postImage: {
         width: "100%",
         height: 200,
         borderRadius: 12,
         marginTop: 10,
         resizeMode: "cover",
-    },
-    button: {
-        marginTop: 15,
-        paddingVertical: 14,
-        paddingHorizontal: 20,
-        borderRadius: 12,
-        backgroundColor: "#007BFF",
-        width: "100%",
-        alignItems: "center",
-    },
-    buttonDark: {
-        backgroundColor: "#333333",
-    },
-    publishButton: {
-        backgroundColor: "#28a745",
-        marginTop: 20,
-    },
-    buttonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
+    }
 });

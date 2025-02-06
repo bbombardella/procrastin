@@ -234,6 +234,7 @@ export default function Profile() {
                                             className="my-1"
                                         >
                                             <TextareaInput placeholder="A short description"
+                                                           textAlignVertical="top"
                                                            value={value}
                                                            onChangeText={onChange}
                                                            onBlur={onBlur}/>

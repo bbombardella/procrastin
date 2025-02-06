@@ -12,6 +12,7 @@ export const postsContract = c.router(
 			summary: 'Get all posts',
 			responses: {
 				200: PostSchema.array(),
+				404: c.type<string>()
 			},
 		},
 		getPost: {

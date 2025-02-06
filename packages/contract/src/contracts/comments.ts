@@ -12,6 +12,7 @@ export const commentsContract = c.router(
 			summary: 'Get all comments',
 			responses: {
 				200: CommentSchema.array(),
+				404: c.type<string>()
 			},
 		},
 		getComment: {
