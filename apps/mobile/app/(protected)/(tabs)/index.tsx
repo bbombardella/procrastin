@@ -1,23 +1,32 @@
 import { FlatList } from 'react-native';
-import Post from '../../../components/Post';
 import { VStack } from '../../../components/ui/vstack';
 import { HStack } from '../../../components/ui/hstack';
 import { Avatar, AvatarBadge, AvatarFallbackText, AvatarImage } from '../../../components/ui/avatar';
 import { Text } from '../../../components/ui/text';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import PostView from '../../../components/PostView';
+import { Post } from '@prisma/client';
 
-const posts = [
+const posts: Post[] = [
     {
-        id: '1',
-        profileName: 'John Doe',
-        imageUrl: 'https://picsum.photos/id/237/320/208',
-        description: 'Premier post sur notre réseau social !',
+        id: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        title: "Premier post",
+        content: "Premier post sur notre réseau social !",
+        mediaUrl: "https://picsum.photos/id/237/320/208",
+        published: true,
+        authorId: 101,
     },
     {
-        id: '2',
-        profileName: 'Machin Chouette',
-        imageUrl: 'https://picsum.photos/id/259/300/208',
-        description: 'Un autre post avec une belle image.',
+        id: 2,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        title: "Un autre post",
+        content: "Un autre post avec une belle image.",
+        mediaUrl: "https://picsum.photos/id/259/300/208",
+        published: true,
+        authorId: 102,
     },
 ];
 
@@ -45,11 +54,8 @@ export default function HomeScreen() {
                     data={posts}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
-                        <Post
-                            id={item.id}
-                            profileName={item.profileName}
-                            imageUrl={item.imageUrl}
-                            description={item.description}
+                        <PostView
+                            post={item}
                         />
                     )}
                     showsVerticalScrollIndicator={false}

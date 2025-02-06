@@ -7,8 +7,9 @@ import { Text } from "./ui/text";
 import { Dimensions, Image, Pressable } from "react-native";
 import { Avatar, AvatarFallbackText, AvatarImage } from "./ui/avatar";
 import { Box } from "./ui/box";
+import { Post } from "@procrastin/prisma";
 
-export default function Post({ id, profileName, imageUrl, description }) {
+export default function PostView({ post }:Post) {
     const [liked, setLiked] = useState(false);
 
     return (
@@ -18,27 +19,27 @@ export default function Post({ id, profileName, imageUrl, description }) {
                 alignItems="center"
             >
                 <Avatar size="md">
-                    <AvatarFallbackText>Jane Doe</AvatarFallbackText>
+                    <AvatarFallbackText>{post.authorId}</AvatarFallbackText>
                         <AvatarImage
                             source={{
-                            uri: `https://picsum.photos/${200+id}`,
+                            uri: `https://picsum.photos/${post.authorId}`,
                             }}
                         />
                 </Avatar>
                 <Text size="md" bold>
-                    {profileName}
+                    {post.authorId}
                 </Text>
             </HStack>
             <VStack>
                 <Text>
-                    {description}
+                    {post.content}
                 </Text>
                 <Box
                     className="w-full"
                     alignItems="center"
                 >
                 <Image
-                    source={{ uri: imageUrl }}
+                    source={{ uri: post.mediaUrl }}
                     style={{
                         width: Dimensions.get('window').width-50,
                         height: undefined,
@@ -59,15 +60,15 @@ export default function Post({ id, profileName, imageUrl, description }) {
                         <MaterialIcons 
                             name={liked ? "favorite" : "favorite-border"} 
                             size={24} 
-                            color={liked ? "red" : "white"} 
+                            color={liked ? "red" : "grey"} 
                         />
                     </Pressable>
                     
-                    <Link href={`/postDetails`}>
+                    <Link href={`/postDetails/${post.id}`}>
                         <MaterialIcons 
                             name="chat-bubble-outline" 
-                            size={24} 
-                            color="white" 
+                            size={24}
+                            color={"grey"}
                         />
                     </Link>
                 </HStack> 
