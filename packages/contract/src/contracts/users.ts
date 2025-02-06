@@ -1,4 +1,4 @@
-import { UserCreateInputSchema, UserSchema } from '@procrastin/prisma'
+import { UserCreateInputSchema, UserSchema, UserUpdateInputSchema } from '@procrastin/prisma'
 import { initContract } from '@ts-rest/core'
 
 const c = initContract()
@@ -32,10 +32,10 @@ export const usersContract = c.router(
 			},
 		},
 		updateUser: {
-			method: 'PUT',
+			method: 'PATCH',
 			path: '/:id',
 			summary: 'Update a user by id',
-			body: UserCreateInputSchema,
+			body: UserUpdateInputSchema,
 			responses: {
 				200: UserSchema,
 			},
@@ -44,6 +44,15 @@ export const usersContract = c.router(
 			method: 'DELETE',
 			path: '/:id',
 			summary: 'Delete a user by id',
+			responses: {
+				200: UserSchema,
+			},
+		},
+
+		me: {
+			method: 'GET',
+			path: '/me',
+			summary: 'Get current user',
 			responses: {
 				200: UserSchema,
 			},

@@ -3,6 +3,7 @@ import 'dotenv/config'
 import process from 'node:process'
 
 import fastifyCors from '@fastify/cors'
+import fastifyJwt from '@fastify/jwt'
 import fastifySensible from '@fastify/sensible'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
@@ -35,18 +36,38 @@ const openApiDocument = generateOpenApi(contract, {
 })
 
 server
-	.register(s.plugin(router))
-	.register(fastifySwagger, {
-		transformObject: () => openApiDocument,
-	})
 	.register(fastifyCors, {
 		origin: '*',
 		methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 		allowedHeaders: ['Content-Type', 'Authorization'],
 	})
+	.register(fastifyJwt, {
+		secret: env.SUPABASE_JWT_SECRET,
+		sign: {
+			algorithm: 'HS256',
+		},
+	})
+	.register(s.plugin(router))
+	.register(fastifySwagger, {
+		transformObject: () => openApiDocument,
+	})
 	.register(fastifySensible)
 	.register(fastifySwaggerUi, {
 		routePrefix: '/docs',
+	})
+	.addHook('onRequest', async (request, reply) => {
+		// unprotected routes
+		if (request.url.startsWith('/docs')) return
+
+		// super token
+		if (request.headers.authorization === `Bearer ${env.SUPER_TOKEN}`) return
+
+		// jwt token
+		try {
+			await request.jwtVerify()
+		} catch {
+			reply.code(401).send({ message: 'Unauthorized' })
+		}
 	})
 
 server

@@ -61,4 +61,19 @@ export const usersRouter = s.router(contract.users, {
 			body: user,
 		}
 	},
+	me: async ({ request }) => {
+		const email = (request.user.valueOf() as JwtPayload['user_metadata']).email
+		const user = await prisma.user.findFirst({
+			where: {
+				email,
+			},
+		})
+
+		if (!user) return { status: 404, body: 'User not found' }
+
+		return {
+			status: 200,
+			body: user,
+		}
+	},
 })
