@@ -169,6 +169,7 @@ export default function NewPostScreen() {
                                         style={{height: 300}}
                                     >
                                         <TextareaInput placeholder="Post's content"
+                                                       textAlignVertical="top"
                                                        value={value}
                                                        onChangeText={onChange}
                                                        style={{height: 300}}
