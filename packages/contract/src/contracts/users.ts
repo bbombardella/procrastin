@@ -1,4 +1,4 @@
-import { UserCreateInputSchema, UserSchema, UserUpdateInputSchema } from '@procrastin/prisma'
+import { UserCreateInputSchema, UserUpdateInputSchema, UserSchema } from '@procrastin/prisma'
 import { initContract } from '@ts-rest/core'
 
 const c = initContract()
