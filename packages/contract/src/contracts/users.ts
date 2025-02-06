@@ -48,6 +48,15 @@ export const usersContract = c.router(
 				200: UserSchema,
 			},
 		},
+
+		me: {
+			method: 'GET',
+			path: '/me',
+			summary: 'Get current user',
+			responses: {
+				200: UserSchema,
+			},
+		},
 	},
 	{
 		pathPrefix: '/users',
