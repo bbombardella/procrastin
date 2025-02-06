@@ -14,7 +14,7 @@ const MAPPING = {
 	'chevron.left.forwardslash.chevron.right': 'code',
 	'chevron.right': 'chevron-right',
 	'plus': 'add',
-	'person.circle.fill': 'account-circle',
+	'person.fill': 'person-4',
 	'heart':'favorite-border',
 	'heart.fill':'favorite',
 	'plus.bubble':'add-comment',
