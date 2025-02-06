@@ -4,6 +4,7 @@ import { environment } from '@procrastin/environment'
 import { ClientArgs, initClient } from '@ts-rest/core'
 import { initQueryClient } from '@ts-rest/react-query'
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, isAxiosError, Method } from 'axios'
+import {supabase} from '../config/supabase';
 
 const clientArgs: ClientArgs = {
 	baseUrl: environment.apiBaseUrl,
@@ -13,7 +14,7 @@ const clientArgs: ClientArgs = {
 	// @ts-ignore
 	api: async ({ path, method, headers, body }) => {
 		// Get token from local storage
-		// const token = AuthService.getToken()
+		const token = (await supabase.auth.getSession()).data.session?.access_token
 
 		const config: AxiosRequestConfig = {
 			method: method.toUpperCase() as Method,
@@ -21,7 +22,7 @@ const clientArgs: ClientArgs = {
 			data: body,
 			headers: {
 				...headers,
-				// authorization: `Bearer ${token}`,
+				authorization: `Bearer ${token}`,
 			},
 		}
 
