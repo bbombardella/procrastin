@@ -90,13 +90,8 @@ export default function Profile() {
     const handleSubmit = async (data: z.infer<typeof userInfoSchema>) => {
         try {
             const {body} = await queryClient.users.updateUser.mutation({
-                params: {
-                    id: '1'
-                },
-                body: {
-                    ...data,
-                    email: ''
-                }
+                params: {id: '1'},
+                body: {...data}
             })
 
             form.reset({
