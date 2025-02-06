@@ -24,6 +24,7 @@ import {useState} from 'react';
 import {queryClient} from '../../../libs/http';
 import {useToast} from '../../../components/ui/toast';
 import {showNewToast} from '../../../helper/show-toast.function';
+import {useRouter} from 'expo-router';
 
 const postSchema = z.object({
     title: z.string().min(1, 'Please provide a title'),
@@ -34,6 +35,7 @@ const postSchema = z.object({
 export default function NewPostScreen() {
     const bottom = useBottomTabOverflow()
     const toast = useToast()
+    const router = useRouter()
 
     const [toastId, setToastId] = useState('')
     const [submitting, setSubmitting] = useState(false)
@@ -68,6 +70,9 @@ export default function NewPostScreen() {
 
             if (result.status === 201) {
                 showToast(toast, 'Post created successfully!', setToastId)
+                form.reset()
+
+                router.navigate('/(protected)/(tabs)')
             } else {
                 throw new Error('An error ocurred while creating the post.')
             }
