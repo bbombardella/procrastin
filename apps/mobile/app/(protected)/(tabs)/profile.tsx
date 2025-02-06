@@ -1,4 +1,4 @@
-import {Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text} from 'react-native';
+import {Alert, KeyboardAvoidingView, Platform, RefreshControl, ScrollView} from 'react-native';
 import {useSupabase} from '../../../context/supabase-provider';
 import {VStack} from '../../../components/ui/vstack';
 import {Avatar, AvatarBadge, AvatarFallbackText, AvatarImage} from '../../../components/ui/avatar';
@@ -17,29 +17,48 @@ import {
 import {Input, InputField} from '../../../components/ui/input';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Textarea, TextareaInput} from '../../../components/ui/textarea';
-import {EditIcon, LockIcon} from '../../../components/ui/icon';
+import {CloseIcon, EditIcon, LockIcon} from '../../../components/ui/icon';
 import {Button, ButtonIcon, ButtonText} from '../../../components/ui/button';
 import {Spinner} from '../../../components/ui/spinner';
 import {queryClient} from '../../../libs/http';
-import {Heading} from '../../../components/ui/heading';
+import {useState} from 'react';
+import {useToast} from '../../../components/ui/toast';
+import {SuccessToast} from '../../../components/ui/success-toast';
+import {ErrorToast} from '../../../components/ui/error-toast';
 
 const userInfoSchema = z.object({
     firstName: z.string().min(2, 'First name must be at least 2 characters long'),
     lastName: z.string().min(2, 'Last name must be at least 2 characters long'),
     description: z.string().max(500, 'Description must not exceed 500 characters').default(''),
+    profilePictureUrl: z.string()
 })
 
 export default function Profile() {
     const {signOut} = useSupabase()
-    const {data, isLoading, isError} = queryClient.users.getUser.useQuery(['tmp'])
+    const toast = useToast()
+
+    const [toastId, setToastId] = useState<string>('')
+    const [loading, setLoading] = useState(false)
+    const [refreshing, setRefreshing] = useState(false);
+
+    const fetchUserInfo = async () => {
+        setLoading(true)
+        const {body} = await queryClient.users.getUser.query({params: {id: '1'}})
+        setLoading(false)
+
+        return {
+            firstName: body.firstName,
+            lastName: body.lastName,
+            description: body.description,
+            profilePictureUrl: body.profilePictureUrl
+        }
+    }
 
     const form = useForm<z.infer<typeof userInfoSchema>>({
         resolver: zodResolver(userInfoSchema),
         mode: 'onChange',
-        defaultValues: {
-            firstName: '',
-            lastName: '',
-            description: '',
+        defaultValues: async () => {
+            return await fetchUserInfo()
         },
     })
 
@@ -51,28 +70,71 @@ export default function Profile() {
         }
     }
 
-    const handleSubmit = () => {
+    const showNewToast = (message: string, error: boolean = false) => {
+        const uniqueToastId = `toast-edit-profile-${Math.random()}`
+        setToastId(uniqueToastId)
+        toast.show({
+            id: uniqueToastId,
+            placement: "top",
+            duration: 5000,
+            render: ({id}) => {
+                if (error) {
+                    return <ErrorToast uniqueToastId={id} message={message} onClose={() => toast.close(uniqueToastId)}/>
+                } else {
+                    return <SuccessToast uniqueToastId={id} message={message}/>
+                }
+            }
+        })
+    }
+
+    const handleSubmit = async (data: z.infer<typeof userInfoSchema>) => {
+        try {
+            const {body} = await queryClient.users.updateUser.mutation({
+                params: {
+                    id: '1'
+                },
+                body: {
+                    ...data,
+                    email: ''
+                }
+            })
+
+            form.reset({
+                firstName: body.firstName,
+                lastName: body.lastName,
+                description: body.description,
+                profilePictureUrl: body.profilePictureUrl
+            })
+
+            showNewToast('Profile edited successfully!')
+        } catch (error: Error | any) {
+            showNewToast(error.message, true)
+            console.error(error.message)
+        }
+
         Alert.alert('Succès', 'Profil mis à jour avec succès !');
     };
+
+    const onRefresh = async () => form.reset(await fetchUserInfo())
 
     return (
         <KeyboardAvoidingView style={{flex: 1}}
                               behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                               keyboardVerticalOffset={100}>
-            <ScrollView>
+            <ScrollView refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+            }>
                 <VStack className="w-full p-4">
-                    {isLoading && <Spinner size="large"/>}
+                    {loading && <Spinner size="large"/>}
 
-                    {isError && <Heading className="text-center" size="3xl">Oops...</Heading>}
-
-                    {!isLoading && !isError &&
+                    {!loading &&
                         <>
                             <HStack className="gap-4 items-center">
                                 <Avatar size="xl">
-                                    <AvatarFallbackText>Jane Doe</AvatarFallbackText>
+                                    <AvatarFallbackText>{form.getValues(['firstName', 'lastName']).join(' ')}</AvatarFallbackText>
                                     <AvatarImage
                                         source={{
-                                            uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+                                            uri: form.getValues('profilePictureUrl'),
                                         }}
                                     />
                                     <AvatarBadge/>
@@ -191,11 +253,20 @@ export default function Profile() {
                                 )}
                             />
 
-                            <Button className="w-full mt-4" size="md" action="positive"
-                                    onPress={form.handleSubmit(handleSubmit)}>
-                                <ButtonIcon as={EditIcon} className="mr-2"/>
-                                <ButtonText>Edit my profile!</ButtonText>
-                            </Button>
+                            <HStack className="gap-4">
+                                <Button className="flex-1 mt-4" size="md" action="negative"
+                                        onPress={() => form.reset()} isDisabled={!form.formState.isDirty}>
+                                    <ButtonIcon as={CloseIcon} className="mr-2"/>
+                                    <ButtonText>Reset</ButtonText>
+                                </Button>
+
+                                <Button className="flex-1 mt-4" size="md" action="positive"
+                                        isDisabled={!form.formState.isDirty}
+                                        onPress={form.handleSubmit(handleSubmit)}>
+                                    <ButtonIcon as={EditIcon} className="mr-2"/>
+                                    <ButtonText>Edit my profile!</ButtonText>
+                                </Button>
+                            </HStack>
 
                             <Button className="w-full mt-4" size="md" action="secondary" onPress={disconnect}>
                                 <ButtonIcon as={LockIcon} className="mr-2"/>
