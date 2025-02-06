@@ -1,82 +1,61 @@
-import { FlatList, StyleSheet, useColorScheme } from 'react-native';
+import { FlatList } from 'react-native';
 import Post from '../../../components/Post';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { VStack } from '../../../components/ui/vstack';
+import { HStack } from '../../../components/ui/hstack';
+import { Avatar, AvatarBadge, AvatarFallbackText, AvatarImage } from '../../../components/ui/avatar';
+import { Text } from '../../../components/ui/text';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const posts = [
     {
         id: '1',
         profileName: 'John Doe',
-        imageUrl: 'https://picsum.photos/id/237/200/300',
+        imageUrl: 'https://picsum.photos/id/237/320/208',
         description: 'Premier post sur notre réseau social !',
     },
     {
         id: '2',
         profileName: 'Machin Chouette',
-        imageUrl: 'https://picsum.photos/id/259/200/300',
+        imageUrl: 'https://picsum.photos/id/259/300/208',
         description: 'Un autre post avec une belle image.',
     },
 ];
 
 export default function HomeScreen() {
-    const colorScheme = useColorScheme();
-    const isDarkMode = colorScheme === 'dark';
-
     return (
-        <SafeAreaView style={[
-            styles.container, 
-            isDarkMode && styles.containerDark
-        ]}>
-            <FlatList
-                data={posts}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <Post
-                        id={item.id}
-                        profileName={item.profileName}
-                        imageUrl={item.imageUrl}
-                        description={item.description}
+        <SafeAreaView className='bg-tertiary-0 flex-1'>
+            <HStack className="w-full p-4" space="xl" alignItems="center">
+                <Avatar size="lg">
+                    <AvatarFallbackText>Mon User</AvatarFallbackText>
+                    <AvatarImage
+                        source={{
+                            uri: `https://picsum.photos/${201}`,
+                        }}
                     />
-                )}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={[
-                    styles.listContent,
-                    isDarkMode && styles.listContentDark
-                ]}
-            />
+                    <AvatarBadge/>
+                </Avatar>
+                <Text size="lg" bold>
+                    Mon User
+                </Text>
+            </HStack>
+            
+            <VStack className="px-4 flex-1" >
+                <FlatList
+                className='flex-1'
+                    data={posts}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                        <Post
+                            id={item.id}
+                            profileName={item.profileName}
+                            imageUrl={item.imageUrl}
+                            description={item.description}
+                        />
+                    )}
+                    showsVerticalScrollIndicator={false}
+                    
+                />
+            </VStack>
         </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 16,
-        backgroundColor: '#fff',
-    },
-    containerDark: {
-        backgroundColor: '#121212',
-    },
-    listContent: {
-        gap: 16,
-        paddingBottom: 16,
-    },
-    listContentDark: {
-        backgroundColor: '#121212',
-    },
-    reactLogo: {
-        height: 178,
-        width: 290,
-        bottom: 0,
-        left: 0,
-        position: 'absolute',
-    },
-    titleContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 8,
-    },
-    stepContainer: {
-        gap: 8,
-        marginBottom: 8,
-    },
-});
