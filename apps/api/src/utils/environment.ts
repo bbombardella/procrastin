@@ -15,4 +15,10 @@ export const env = cleanEnv(process.env, {
 	// auth
 	SUPABASE_JWT_SECRET: str(),
 	SUPER_TOKEN: str(),
+
+	// s3
+	S3_ENDPOINT: str(),
+	S3_BUCKET_NAME: str({ default: 'procrastin' }),
+	S3_ACCESS_KEY_ID: str(),
+	S3_SECRET_ACCESS_KEY: str(),
 })

@@ -1,4 +1,4 @@
-import {KeyboardAvoidingView, Platform, RefreshControl, ScrollView} from 'react-native';
+import {Alert, KeyboardAvoidingView, Platform, RefreshControl, ScrollView, TouchableOpacity} from 'react-native';
 import {useSupabase} from '../../../context/supabase-provider';
 import {VStack} from '../../../components/ui/vstack';
 import {Avatar, AvatarBadge, AvatarFallbackText, AvatarImage} from '../../../components/ui/avatar';
@@ -27,6 +27,7 @@ import {SuccessToast} from '../../../components/ui/success-toast';
 import {ErrorToast} from '../../../components/ui/error-toast';
 import {Text} from '../../../components/ui/text';
 import {Link} from 'expo-router';
+import * as ImagePicker from 'expo-image-picker'
 
 const userInfoSchema = z.object({
     firstName: z.string().min(2, 'First name must be at least 2 characters long'),
@@ -41,28 +42,40 @@ export default function Profile() {
 
     const [toastId, setToastId] = useState<string>('')
     const [loading, setLoading] = useState(false)
-    const [refreshing, setRefreshing] = useState(false);
+    const [refreshing, setRefreshing] = useState(false)
     const [submitting, setSubmitting] = useState(false)
+    const [profilePicture, setProfilePicture] = useState<{
+        uri: string
+        type: string
+        name: string
+    } | null>(null)
 
     const fetchUserInfo = async () => {
         setLoading(true)
-        const {body} = await queryClient.users.getUser.query({params: {id: '1'}})
+        const user = await queryClient.users.getUser.query({params: {id: '1'}})
         setLoading(false)
 
-        return {
-            firstName: body.firstName,
-            lastName: body.lastName,
-            description: body.description,
-            profilePictureUrl: body.profilePictureUrl
+        if (user.status === 200) {
+            return {
+                firstName: user.body.firstName,
+                lastName: user.body.lastName,
+                description: user.body.description,
+                profilePictureUrl: user.body.profilePictureUrl
+            }
+        } else {
+            return {
+                firstName: '',
+                lastName: '',
+                description: '',
+                profilePictureUrl: ''
+            }
         }
     }
 
     const form = useForm<z.infer<typeof userInfoSchema>>({
         resolver: zodResolver(userInfoSchema),
         mode: 'onChange',
-        defaultValues: async () => {
-            return await fetchUserInfo()
-        },
+        defaultValues: async () => fetchUserInfo(),
     })
 
     async function disconnect() {
@@ -90,20 +103,80 @@ export default function Profile() {
         })
     }
 
+    const pickImage = async () => {
+        try {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== "granted") {
+                Alert.alert("Permission requise", "Autorisez l'accès à la galerie pour sélectionner une image.");
+                return;
+            }
+
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+            });
+
+            if (!result.canceled && result.assets.length > 0) {
+                const asset = result.assets[0]
+                form.setValue('profilePictureUrl', asset.uri, { shouldDirty: true })
+                setProfilePicture({
+                    uri: asset.uri,
+                    type: asset.mimeType ?? 'image/jpeg',
+                    name: asset.fileName ?? asset.uri.split("/").pop() ?? 'profile-picture.jpg'
+                })
+            }
+        } catch (error) {
+            console.error('An error occurred while selecting the image')
+        }
+    }
+
     const handleSubmit = async (data: z.infer<typeof userInfoSchema>) => {
         try {
             setRefreshing(true)
-            const {body} = await queryClient.users.updateUser.mutation({
-                params: {id: '1'},
-                body: {...data}
-            })
 
-            form.reset({
-                firstName: body.firstName,
-                lastName: body.lastName,
-                description: body.description,
-                profilePictureUrl: body.profilePictureUrl
+            let fileUrl: string | undefined = undefined
+            if (profilePicture) {
+                const formData = new FormData()
+                // @ts-expect-error: special react native format for form data
+                formData.append('file', profilePicture)
+                const file = await queryClient.files.uploadFile.mutation({
+                    body: formData,
+                    extraHeaders: { "Content-Type": "multipart/form-data" }
+                })
+                console.log('file', file)
+                if (file.status === 200) {
+                    fileUrl = file.body
+                } else {
+                    if (file.status === 500 && file.body === 'request file too large' ){
+                        showNewToast('Failed to upload profile picture. File is too large.', true)
+                    } else {
+                        showNewToast('Failed to upload profile picture.', true)
+                    }
+
+                    form.setValue('profilePictureUrl', data.profilePictureUrl)
+                }
+            }
+
+            const user = await queryClient.users.updateUser.mutation({
+                params: {id: '1'},
+                body: {
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    description: data.description,
+                    profilePictureUrl: fileUrl
+                }
             })
+            
+            if (user.status === 200) {
+                form.reset({
+                    firstName: user.body.firstName,
+                    lastName: user.body.lastName,
+                    description: user.body.description,
+                    profilePictureUrl: user.body.profilePictureUrl
+                })
+            }
 
             showNewToast('Profile edited successfully!')
         } catch (error: Error | any) {
@@ -111,6 +184,7 @@ export default function Profile() {
             console.error(error.message)
         } finally {
             setSubmitting(false)
+            setRefreshing(false)
         }
     };
 
@@ -129,15 +203,17 @@ export default function Profile() {
                     {!loading &&
                         <>
                             <HStack className="gap-4 items-center">
-                                <Avatar size="xl">
-                                    <AvatarFallbackText>{form.getValues(['firstName', 'lastName']).join(' ')}</AvatarFallbackText>
-                                    <AvatarImage
-                                        source={{
-                                            uri: form.getValues('profilePictureUrl'),
-                                        }}
-                                    />
-                                    <AvatarBadge/>
-                                </Avatar>
+                                <TouchableOpacity onPress={pickImage}>
+                                    <Avatar size="xl">
+                                        <AvatarFallbackText>{form.getValues(['firstName', 'lastName']).join(' ')}</AvatarFallbackText>
+                                        <AvatarImage
+                                            source={{
+                                                uri:  form.watch('profilePictureUrl'),
+                                            }}
+                                        />
+                                        <AvatarBadge/>
+                                    </Avatar>
+                                </TouchableOpacity>
                                 <VStack className="flex-1 gap-2">
                                     <Controller
                                         control={form.control}

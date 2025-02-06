@@ -28,7 +28,7 @@ export const usersRouter = s.router(contract.users, {
 	},
 	createUser: async ({ body }) => {
 		const user = await prisma.user.create({
-			data: body,
+			data: body
 		})
 
 		return {
