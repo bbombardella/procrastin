@@ -81,8 +81,7 @@ export default function NewPostScreen() {
                 body: {
                     title: data.title,
                     content: data.content,
-                    mediaUrl: file.body,
-                    author: {}
+                    mediaUrl: file.body
                 }
             })
 
