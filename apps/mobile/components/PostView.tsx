@@ -1,45 +1,25 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import {useMemo, useState} from "react";
+import {useState} from "react";
 import {Link} from "expo-router";
 import {VStack} from "./ui/vstack";
 import {HStack} from "./ui/hstack";
 import {Text} from "./ui/text";
 import {Dimensions, Image, Pressable} from "react-native";
-import {Avatar, AvatarFallbackText, AvatarImage} from "./ui/avatar";
 import {Box} from "./ui/box";
 import {PostWithAuthor} from "@procrastin/prisma";
-import {Heading} from './ui/heading';
+import {PostHeader} from './PostHeader';
 
 export default function PostView({post}: { post: PostWithAuthor }) {
-    const [liked, setLiked] = useState(false);
-    const formattedDate = useMemo(() => new Date(post.createdAt).toLocaleString(), [post.createdAt])
+    const [liked, setLiked] = useState(false)
 
     return (
         <VStack className="w-full p-4" space="md">
-            <HStack className="items-center" space="sm">
-                <Avatar size="md">
-                    <AvatarFallbackText>{post.author.firstName} {post.author.lastName}</AvatarFallbackText>
-                    <AvatarImage
-                        source={{
-                            uri: post.author.profilePictureUrl,
-                        }}
-                    />
-                </Avatar>
-                <VStack>
-                    <Heading size="sm" bold>
-                        {post.author.firstName}&nbsp;{post.author.lastName}
-                    </Heading>
-                    <Text>{formattedDate}</Text>
-                </VStack>
-            </HStack>
+            <PostHeader date={post.createdAt} author={post.author} size="sm"/>
             <VStack>
                 <Text>
                     {post.content}
                 </Text>
-                <Box
-                    className="w-full"
-                    alignItems="center"
-                >
+                <Box className="w-full items-center">
                     <Image
                         source={{uri: post.mediaUrl}}
                         style={{

@@ -1,29 +1,25 @@
-import { Comment } from "@prisma/client";
+import { CommentWithAuthor } from "@procrastin/prisma";
 import { Avatar, AvatarFallbackText, AvatarImage } from "./ui/avatar";
 import { Box } from "./ui/box";
 import { HStack } from "./ui/hstack";
 import { Text } from "./ui/text";
 
-export default function CommentView({ comment }: Comment) {
+export default function CommentView({ comment }: {comment: CommentWithAuthor}) {
 
     return (
-        <Box className="p-4 background-primary-500">
-            <HStack alignItems="center" space="sm">
+        <Box className="p-4 gap-2 background-primary-500">
+            <HStack className="items-center" space="sm">
                 <Avatar size="sm">
-                    <AvatarFallbackText>{comment.authorId}</AvatarFallbackText>
+                    <AvatarFallbackText>{comment.author.firstName} {comment.author.lastName}</AvatarFallbackText>
                     <AvatarImage
                         source={{
-                            uri: `https://picsum.photos/id/${200+comment.id}/12/12`,
+                            uri: comment.author.profilePictureUrl,
                         }}
                     />
                 </Avatar>
-                <Text>
-                    {comment.authorId}
-                </Text>
+                <Text>{comment.author.firstName}&nbsp;{comment.author.lastName}</Text>
             </HStack>
-            <Text>
-                {comment.content}
-            </Text>
+            <Text>{comment.content}</Text>
         </Box>
     );
 }       

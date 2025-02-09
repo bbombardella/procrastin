@@ -1,4 +1,9 @@
-import {PostCreateWithoutAuthorInputSchema, PostSchema, PostWithAuthorSchema} from '@procrastin/prisma'
+import {
+	PostCreateWithoutAuthorInputSchema,
+	PostSchema,
+	PostWithAuthorSchema,
+	PostWithRelationsSchema
+} from '@procrastin/prisma'
 import { initContract } from '@ts-rest/core'
 
 const c = initContract()
@@ -11,8 +16,7 @@ export const postsContract = c.router(
 			path: '',
 			summary: 'Get all posts',
 			responses: {
-				200: PostWithAuthorSchema.array(),
-				404: c.type<string>()
+				200: PostWithAuthorSchema.array()
 			},
 		},
 		getPost: {
@@ -20,7 +24,8 @@ export const postsContract = c.router(
 			path: '/:id',
 			summary: 'Get a post by id',
 			responses: {
-				200: PostWithAuthorSchema,
+				200: PostWithRelationsSchema,
+				404: c.type<string>()
 			},
 		},
 		createPost: {

@@ -10,7 +10,12 @@ export const postsRouter = s.router(contract.posts, {
 				id: Number(id),
 			},
 			include: {
-				author: true
+				author: true,
+				comments: {
+					include: {
+						author: true
+					}
+				}
 			}
 		})
 
