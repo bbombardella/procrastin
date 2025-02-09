@@ -9,6 +9,9 @@ export const postsRouter = s.router(contract.posts, {
 			where: {
 				id: Number(id),
 			},
+			include: {
+				author: true
+			}
 		})
 
 		if (!post) return { status: 404, body: 'Post not found' }
@@ -19,7 +22,11 @@ export const postsRouter = s.router(contract.posts, {
 		}
 	},
 	getPosts: async () => {
-		const posts = await prisma.post.findMany()
+		const posts = await prisma.post.findMany({
+			include: {
+				author: true
+			}
+		})
 
 		return {
 			status: 200,
