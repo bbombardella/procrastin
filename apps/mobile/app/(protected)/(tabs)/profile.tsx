@@ -32,7 +32,12 @@ const userInfoSchema = z.object({
     firstName: z.string().min(2, 'First name must be at least 2 characters long'),
     lastName: z.string().min(2, 'Last name must be at least 2 characters long'),
     description: z.string().max(500, 'Description must not exceed 500 characters').default(''),
-    profilePictureUrl: z.string()
+    profilePictureUrl: z.string().optional(),
+    profilePictureSystem: z.object({
+        uri: z.string().optional(),
+        type: z.string().optional(),
+        name: z.string().optional()
+    }).optional()
 })
 
 export default function Profile() {
@@ -43,15 +48,10 @@ export default function Profile() {
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
     const [submitting, setSubmitting] = useState(false)
-    const [profilePicture, setProfilePicture] = useState<{
-        uri: string
-        type: string
-        name: string
-    } | null>(null)
 
     const fetchUserInfo = async () => {
         setLoading(true)
-        const user = await queryClient.users.getUser.query({params: {id: '1'}})
+        const user = await queryClient.users.me.query()
         setLoading(false)
 
         if (user.status === 200) {
@@ -104,12 +104,11 @@ export default function Profile() {
 
             if (!result.canceled && result.assets.length > 0) {
                 const asset = result.assets[0]
-                form.setValue('profilePictureUrl', asset.uri, {shouldDirty: true})
-                setProfilePicture({
+                form.setValue('profilePictureSystem', {
                     uri: asset.uri,
                     type: asset.mimeType ?? 'image/jpeg',
                     name: asset.fileName ?? asset.uri.split("/").pop() ?? 'profile-picture.jpg'
-                })
+                }, {shouldDirty: true})
             }
         } catch (error) {
             showNewToast(toast, 'An error occurred while selecting the image', setToastId, true)
@@ -122,10 +121,10 @@ export default function Profile() {
             setRefreshing(true)
 
             let fileUrl: string | undefined = undefined
-            if (profilePicture) {
+            if (data.profilePictureSystem) {
                 const formData = new FormData()
                 // @ts-expect-error: special react native format for form data
-                formData.append('file', profilePicture)
+                formData.append('file', data.profilePictureSystem)
                 const file = await queryClient.files.uploadFile.mutation({
                     body: formData,
                     extraHeaders: {"Content-Type": "multipart/form-data"}
@@ -193,7 +192,7 @@ export default function Profile() {
                                         <AvatarFallbackText>{form.getValues(['firstName', 'lastName']).join(' ')}</AvatarFallbackText>
                                         <AvatarImage
                                             source={{
-                                                uri: form.watch('profilePictureUrl'),
+                                                uri: form.watch('profilePictureSystem.uri') ?? form.watch('profilePictureUrl'),
                                             }}
                                         />
                                         <AvatarBadge/>
