@@ -29,7 +29,11 @@ import {useRouter} from 'expo-router';
 const postSchema = z.object({
     title: z.string().min(1, 'Please provide a title'),
     content: z.string().min(1, 'Please provide a description'),
-    mediaUrl: z.string().min(1, 'Please provide an image')
+    media: z.object({
+        uri: z.string().min(1, 'Please provide an image'),
+        type: z.string().optional(),
+        name: z.string().optional()
+    })
 })
 
 export default function NewPostScreen() {
@@ -45,7 +49,7 @@ export default function NewPostScreen() {
         defaultValues: {
             title: '',
             content: '',
-            mediaUrl: ''
+            media: undefined
         },
     })
 
@@ -55,16 +59,30 @@ export default function NewPostScreen() {
         setSubmitting(true)
 
         try {
-            //todo : upload image before
+            const formData = new FormData()
+            // @ts-expect-error: special react native format for form data
+            formData.append('file', data.media)
+            const file = await queryClient.files.uploadFile.mutation({
+                body: formData,
+                extraHeaders: {"Content-Type": "multipart/form-data"}
+            })
+
+            if (file.status !== 200) {
+                if (file.status === 500 && file.body === 'request file too large') {
+                    showNewToast(toast, 'Failed to upload profile picture. File is too large.', setToastId, true)
+                } else {
+                    showNewToast(toast, 'Failed to upload profile picture.', setToastId, true)
+                }
+
+                return;
+            }
+
             const result = await queryClient.posts.createPost.mutation({
                 body: {
-                    ...data,
-                    mediaUrl: '',
-                    author: {
-                        connect: {
-                            id: 1
-                        }
-                    }
+                    title: data.title,
+                    content: data.content,
+                    mediaUrl: file.body,
+                    author: {}
                 }
             })
 
@@ -94,7 +112,12 @@ export default function NewPostScreen() {
             });
 
             if (!result.canceled) {
-                form.setValue('mediaUrl', result.assets[0].uri, {shouldDirty: true});
+                const asset = result.assets[0]
+                form.setValue('media', {
+                    uri: asset.uri,
+                    type: asset.mimeType ?? 'image/jpeg',
+                    name: asset.fileName ?? asset.uri.split("/").pop() ?? 'profile-picture.jpg'
+                }, {shouldDirty: true})
             }
         } catch (error: Error | any) {
             showToast(toast, `Une erreur est survenue lors de la sélection de l'image : ${error.message}`, setToastId, true)
@@ -116,8 +139,8 @@ export default function NewPostScreen() {
                             <ButtonText>Choose an image</ButtonText>
                         </Button>
 
-                        {form.watch('mediaUrl') &&
-                            <Image source={{uri: form.watch('mediaUrl')}} style={styles.postImage}/>}
+                        {form.watch('media.uri') &&
+                            <Image source={{uri: form.watch('media.uri')}} style={styles.postImage}/>}
 
                         <Controller
                             control={form.control}
