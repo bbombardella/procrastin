@@ -21,9 +21,9 @@ import {EyeIcon, EyeOffIcon} from '../../components/ui/icon';
 import {Button, ButtonText} from '../../components/ui/button';
 import {HStack} from '../../components/ui/hstack';
 import {useToast} from '../../components/ui/toast';
-import {ErrorToast} from '../../components/ui/error-toast';
 import {queryClient} from '../../libs/http';
 import {Textarea, TextareaInput} from '../../components/ui/textarea';
+import {showNewToast} from '../../helper/show-toast.function';
 
 const signupSchema = z.object({
     firstName: z.string().min(2, 'First name must be at least 2 characters long'),
@@ -52,28 +52,11 @@ export default function SignUp() {
         },
     })
 
-    const showNewToast = (error: Error) => {
-        const uniqueToastId = `toast-${Math.random()}`
-        setToastId(uniqueToastId)
-        toast.show({
-            id: uniqueToastId,
-            placement: "top",
-            duration: 5000,
-            render: ({id}) => (<ErrorToast uniqueToastId={id} message={error.message} onClose={() => toast.close(id)}/>)
-        })
-    }
-
-    const handleToast = (error: Error) => {
-        if (!toast.isActive(toastId)) {
-            showNewToast(error)
-        }
-    }
-
     const onSubmit = async ({firstName, lastName, description, email, password}: z.infer<typeof signupSchema>) => {
         try {
             await signUp(email, password)
 
-            await queryClient.users.createUser.mutation(
+            const result = await queryClient.users.createUser.mutation(
                 {
                     body: {
                         firstName,
@@ -85,10 +68,14 @@ export default function SignUp() {
                 }
             )
 
-            form.reset()
+            if (result?.status === 201) {
+                form.reset()
+            } else {
+                showNewToast(toast, 'Error while creating the account', setToastId, true)
+            }
         } catch (error: Error | any) {
-            handleToast(error)
-            console.log(error.message)
+            showNewToast(toast, error.message, setToastId, true)
+            console.error(error.message)
         }
     }
 
