@@ -23,11 +23,10 @@ import {Spinner} from '../../../components/ui/spinner';
 import {queryClient} from '../../../libs/http';
 import {useState} from 'react';
 import {useToast} from '../../../components/ui/toast';
-import {SuccessToast} from '../../../components/ui/success-toast';
-import {ErrorToast} from '../../../components/ui/error-toast';
 import {Text} from '../../../components/ui/text';
 import {Link} from 'expo-router';
 import * as ImagePicker from 'expo-image-picker'
+import {showNewToast} from '../../../helper/show-toast.function';
 
 const userInfoSchema = z.object({
     firstName: z.string().min(2, 'First name must be at least 2 characters long'),
@@ -63,6 +62,7 @@ export default function Profile() {
                 profilePictureUrl: user.body.profilePictureUrl
             }
         } else {
+            showNewToast(toast, 'Error while fetching your informations', setToastId, true)
             return {
                 firstName: '',
                 lastName: '',
@@ -82,30 +82,14 @@ export default function Profile() {
         try {
             await signOut()
         } catch (error: Error | any) {
-            console.log(error.message)
+            showNewToast(toast, error.message, setToastId, true)
+            console.error(error.message)
         }
-    }
-
-    const showNewToast = (message: string, error: boolean = false) => {
-        const uniqueToastId = `toast-edit-profile-${Math.random()}`
-        setToastId(uniqueToastId)
-        toast.show({
-            id: uniqueToastId,
-            placement: "top",
-            duration: 5000,
-            render: ({id}) => {
-                if (error) {
-                    return <ErrorToast uniqueToastId={id} message={message} onClose={() => toast.close(uniqueToastId)}/>
-                } else {
-                    return <SuccessToast uniqueToastId={id} message={message}/>
-                }
-            }
-        })
     }
 
     const pickImage = async () => {
         try {
-            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
             if (status !== "granted") {
                 Alert.alert("Permission requise", "Autorisez l'accès à la galerie pour sélectionner une image.");
                 return;
@@ -120,7 +104,7 @@ export default function Profile() {
 
             if (!result.canceled && result.assets.length > 0) {
                 const asset = result.assets[0]
-                form.setValue('profilePictureUrl', asset.uri, { shouldDirty: true })
+                form.setValue('profilePictureUrl', asset.uri, {shouldDirty: true})
                 setProfilePicture({
                     uri: asset.uri,
                     type: asset.mimeType ?? 'image/jpeg',
@@ -128,6 +112,7 @@ export default function Profile() {
                 })
             }
         } catch (error) {
+            showNewToast(toast, 'An error occurred while selecting the image', setToastId, true)
             console.error('An error occurred while selecting the image')
         }
     }
@@ -143,16 +128,16 @@ export default function Profile() {
                 formData.append('file', profilePicture)
                 const file = await queryClient.files.uploadFile.mutation({
                     body: formData,
-                    extraHeaders: { "Content-Type": "multipart/form-data" }
+                    extraHeaders: {"Content-Type": "multipart/form-data"}
                 })
-                console.log('file', file)
+
                 if (file.status === 200) {
                     fileUrl = file.body
                 } else {
-                    if (file.status === 500 && file.body === 'request file too large' ){
-                        showNewToast('Failed to upload profile picture. File is too large.', true)
+                    if (file.status === 500 && file.body === 'request file too large') {
+                        showNewToast(toast, 'Failed to upload profile picture. File is too large.', setToastId, true)
                     } else {
-                        showNewToast('Failed to upload profile picture.', true)
+                        showNewToast(toast, 'Failed to upload profile picture.', setToastId, true)
                     }
 
                     form.setValue('profilePictureUrl', data.profilePictureUrl)
@@ -168,7 +153,7 @@ export default function Profile() {
                     profilePictureUrl: fileUrl
                 }
             })
-            
+
             if (user.status === 200) {
                 form.reset({
                     firstName: user.body.firstName,
@@ -178,9 +163,9 @@ export default function Profile() {
                 })
             }
 
-            showNewToast('Profile edited successfully!')
+            showNewToast(toast, 'Profile edited successfully!', setToastId)
         } catch (error: Error | any) {
-            showNewToast(error.message, true)
+            showNewToast(toast, error.message, setToastId, true)
             console.error(error.message)
         } finally {
             setSubmitting(false)
@@ -208,7 +193,7 @@ export default function Profile() {
                                         <AvatarFallbackText>{form.getValues(['firstName', 'lastName']).join(' ')}</AvatarFallbackText>
                                         <AvatarImage
                                             source={{
-                                                uri:  form.watch('profilePictureUrl'),
+                                                uri: form.watch('profilePictureUrl'),
                                             }}
                                         />
                                         <AvatarBadge/>
