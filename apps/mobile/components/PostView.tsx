@@ -1,5 +1,5 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import {useState} from "react";
+import {useMemo, useState} from "react";
 import {Link} from "expo-router";
 import {VStack} from "./ui/vstack";
 import {HStack} from "./ui/hstack";
@@ -12,6 +12,7 @@ import {Heading} from './ui/heading';
 
 export default function PostView({post}: { post: PostWithAuthor }) {
     const [liked, setLiked] = useState(false);
+    const formattedDate = useMemo(() => new Date(post.createdAt).toLocaleString(), [post.createdAt])
 
     return (
         <VStack className="w-full p-4" space="md">
@@ -24,9 +25,12 @@ export default function PostView({post}: { post: PostWithAuthor }) {
                         }}
                     />
                 </Avatar>
-                <Heading size="sm" bold>
-                    {post.author.firstName}&nbsp;{post.author.lastName}
-                </Heading>
+                <VStack>
+                    <Heading size="sm" bold>
+                        {post.author.firstName}&nbsp;{post.author.lastName}
+                    </Heading>
+                    <Text>{formattedDate}</Text>
+                </VStack>
             </HStack>
             <VStack>
                 <Text>
