@@ -4,36 +4,12 @@ import {HStack} from '../../../components/ui/hstack';
 import {Avatar, AvatarBadge, AvatarFallbackText, AvatarImage} from '../../../components/ui/avatar';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import PostView from '../../../components/PostView';
-import {Post} from '@prisma/client';
 import {useBottomTabOverflow} from '../../../components/ui/TabBarBackground';
 import {queryClient} from '../../../libs/http';
 import {useSupabase} from '../../../context/supabase-provider';
 import {Spinner} from '../../../components/ui/spinner';
 import {Heading} from '../../../components/ui/heading';
 import {useState} from 'react';
-
-const posts: Post[] = [
-    {
-        id: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        title: "Premier post",
-        content: "Premier post sur notre réseau social !",
-        mediaUrl: "https://picsum.photos/id/237/320/208",
-        published: true,
-        authorId: 101,
-    },
-    {
-        id: 2,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        title: "Un autre post",
-        content: "Un autre post avec une belle image.",
-        mediaUrl: "https://picsum.photos/id/259/300/208",
-        published: true,
-        authorId: 102,
-    },
-];
 
 export default function HomeScreen() {
     const bottom = useBottomTabOverflow()
