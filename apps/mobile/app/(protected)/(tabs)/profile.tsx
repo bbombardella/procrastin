@@ -29,6 +29,7 @@ import * as ImagePicker from 'expo-image-picker'
 import {showNewToast} from '../../../helper/show-toast.function';
 
 const userInfoSchema = z.object({
+    id: z.string(),
     firstName: z.string().min(2, 'First name must be at least 2 characters long'),
     lastName: z.string().min(2, 'Last name must be at least 2 characters long'),
     description: z.string().max(500, 'Description must not exceed 500 characters').default(''),
@@ -56,6 +57,7 @@ export default function Profile() {
 
         if (user.status === 200) {
             return {
+                id: String(user.body.id),
                 firstName: user.body.firstName,
                 lastName: user.body.lastName,
                 description: user.body.description,
@@ -64,6 +66,7 @@ export default function Profile() {
         } else {
             showNewToast(toast, 'Error while fetching your informations', setToastId, true)
             return {
+                id: '',
                 firstName: '',
                 lastName: '',
                 description: '',
@@ -144,7 +147,7 @@ export default function Profile() {
             }
 
             const user = await queryClient.users.updateUser.mutation({
-                params: {id: '1'},
+                params: {id: data.id},
                 body: {
                     firstName: data.firstName,
                     lastName: data.lastName,
