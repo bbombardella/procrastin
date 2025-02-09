@@ -25,6 +25,9 @@ export const postsRouter = s.router(contract.posts, {
 		const posts = await prisma.post.findMany({
 			include: {
 				author: true
+			},
+			orderBy: {
+				createdAt: 'desc'
 			}
 		})
 
