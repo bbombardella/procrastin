@@ -14,6 +14,9 @@ export const postsRouter = s.router(contract.posts, {
 				comments: {
 					include: {
 						author: true
+					},
+					orderBy: {
+						createdAt: 'desc'
 					}
 				}
 			}

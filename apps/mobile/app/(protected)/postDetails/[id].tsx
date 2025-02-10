@@ -61,7 +61,7 @@ export default function PostDetails() {
             })
 
             if (result.status === 201) {
-                data.body.comments.push(result.body)
+                data.body.comments.unshift(result.body)
                 form.reset()
             } else {
                 //TODO toast
