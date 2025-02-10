@@ -63,10 +63,13 @@ export default function HomeScreen() {
                             className='flex-1'
                             data={posts.data!!.body}
                             keyExtractor={(item) => `post-${item.id}`}
-                            renderItem={({item}) => (
-                                <PostView
-                                    post={item}
-                                />
+                            renderItem={({item, index}) => (
+                                <>
+                                    <PostView
+                                        post={item}
+                                    />
+                                    {index < posts.data!!.body.length - 1 && <Divider />}
+                                </>
                             )}
                             showsVerticalScrollIndicator={false}
                             refreshing={isRefreshing}
