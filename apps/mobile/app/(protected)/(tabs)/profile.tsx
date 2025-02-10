@@ -45,7 +45,7 @@ export default function Profile() {
     const {signOut} = useSupabase()
     const toast = useToast()
 
-    const [toastId, setToastId] = useState<string>('')
+    const [_, setToastId] = useState<string>('')
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
     const [submitting, setSubmitting] = useState(false)

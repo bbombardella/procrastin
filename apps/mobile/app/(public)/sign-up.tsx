@@ -37,7 +37,7 @@ export default function SignUp() {
     const {signUp} = useSupabase()
     const toast = useToast()
 
-    const [toastId, setToastId] = useState<string>('')
+    const [_, setToastId] = useState<string>('')
     const [showPassword, setShowPassword] = useState(false)
 
     const form = useForm<z.infer<typeof signupSchema>>({

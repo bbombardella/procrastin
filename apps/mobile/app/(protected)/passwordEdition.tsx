@@ -35,7 +35,7 @@ export default function PasswordEdition() {
     const router = useRouter()
     const toast = useToast()
 
-    const [toastId, setToastId] = useState<string>('')
+    const [_, setToastId] = useState<string>('')
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [submitting, setSubmitting] = useState(false)

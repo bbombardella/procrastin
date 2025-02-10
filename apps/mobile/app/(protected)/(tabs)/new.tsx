@@ -41,7 +41,7 @@ export default function NewPostScreen() {
     const toast = useToast()
     const router = useRouter()
 
-    const [toastId, setToastId] = useState('')
+    const [_, setToastId] = useState('')
     const [submitting, setSubmitting] = useState(false)
 
     const form = useForm<z.infer<typeof postSchema>>({
