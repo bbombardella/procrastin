@@ -9,6 +9,9 @@ export const commentsRouter = s.router(contract.comments, {
 			where: {
 				id: Number(id),
 			},
+			include: {
+				author: true
+			}
 		})
 
 		if (!comment) return { status: 404, body: 'Comment not found' }
@@ -19,16 +22,39 @@ export const commentsRouter = s.router(contract.comments, {
 		}
 	},
 	getComments: async () => {
-		const comments = await prisma.comment.findMany()
+		const comments = await prisma.comment.findMany({
+			include: {
+				author: true
+			}
+		})
 
 		return {
 			status: 200,
 			body: comments,
 		}
 	},
-	createComment: async ({ body }) => {
+	createComment: async ({ body, request }) => {
+		const email = (request.user.valueOf() as JwtPayload['user_metadata']).email
+		const user = await prisma.user.findFirst({
+			where: {
+				email,
+			},
+		})
+
+		if (!user) return {status: 404, body: 'User not found'}
+
 		const comment = await prisma.comment.create({
-			data: body,
+			data: {
+				...body,
+				author: {
+					connect: {
+						id: user.id
+					}
+				}
+			},
+			include: {
+				author: true
+			}
 		})
 
 		return {
@@ -42,6 +68,9 @@ export const commentsRouter = s.router(contract.comments, {
 				id: Number(id),
 			},
 			data: body,
+			include: {
+				author: true
+			}
 		})
 
 		return {

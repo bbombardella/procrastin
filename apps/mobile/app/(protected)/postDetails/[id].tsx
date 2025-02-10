@@ -1,55 +1,22 @@
 import {useLocalSearchParams, useNavigation} from "expo-router";
-import {FlatList, Image, StyleSheet} from "react-native";
+import {Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet} from "react-native";
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Text} from "../../../components/ui/text";
 import {VStack} from "../../../components/ui/vstack";
 import CommentView from "../../../components/CommentView";
-import {FormControl, FormControlLabel, FormControlLabelText} from "../../../components/ui/form-control";
+import {FormControl, FormControlError, FormControlErrorText} from "../../../components/ui/form-control";
 import {Input, InputField} from "../../../components/ui/input";
 import React, {useEffect} from "react";
-import {Button, ButtonText} from "../../../components/ui/button";
 import {z} from "zod";
-import {useForm} from "react-hook-form";
+import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {queryClient} from '../../../libs/http';
 import {Spinner} from '../../../components/ui/spinner';
 import {PostHeader} from '../../../components/PostHeader';
 import {Divider} from '../../../components/ui/divider';
-
-export const post = {
-    id: 1, // Ajouté un ID pour le post
-    profileName: "John Doe",
-    imageUrl: "https://picsum.photos/200/300?grayscale",
-    description: "Voici un superbe post avec une belle image.",
-    createdAt: new Date(), // Date de création
-    updatedAt: new Date(), // Date de mise à jour
-    comments: [
-        {
-            id: 2, // ID du commentaire sous forme numérique
-            createdAt: new Date(), // Date de création du commentaire
-            updatedAt: new Date(), // Date de mise à jour du commentaire
-            content: "Superbe photo !",
-            authorId: 1, // ID de l'auteur, exemple
-            postId: 1, // ID du post auquel appartient ce commentaire
-        },
-        {
-            id: 3,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            content: "Magnifique, j'adore !",
-            authorId: 2, // ID de l'auteur
-            postId: 1,
-        },
-        {
-            id: 4,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            content: "Où as-tu pris cette photo ?",
-            authorId: 3, // ID de l'auteur
-            postId: 1,
-        },
-    ],
-};
+import {HStack} from '../../../components/ui/hstack';
+import {Button, ButtonText} from '../../../components/ui/button';
+import {Heading} from '../../../components/ui/heading';
 
 const addCommentSchema = z.object({
     comment: z.string().min(2, 'Comment must be at least 2 characters long'),
@@ -61,11 +28,8 @@ export default function PostDetails() {
 
     const {isLoading, data} = queryClient.posts.getPost.useQuery([`post-details-${id}`], {params: {id}})
 
-    const [isInvalid, setIsInvalid] = React.useState(false)
-    const [inputValue, setInputValue] = React.useState("")
     const form = useForm<z.infer<typeof addCommentSchema>>({
         resolver: zodResolver(addCommentSchema),
-        mode: 'onChange',
         defaultValues: {
             comment: ''
         },
@@ -79,65 +43,109 @@ export default function PostDetails() {
         }
     }, [data]);
 
-    async function onSubmit(data: z.infer<typeof addCommentSchema>) {
+    async function onSubmit(formData: z.infer<typeof addCommentSchema>) {
+        if (!data) {
+            return;
+        }
+
         try {
-            //TODO
-            form.reset()
+            const result = await queryClient.comments.createComment.mutation({
+                body: {
+                    content: formData.comment,
+                    post: {
+                        connect: {
+                            id: data.body.id
+                        }
+                    }
+                }
+            })
+
+            if (result.status === 201) {
+                data.body.comments.push(result.body)
+                form.reset()
+            } else {
+                //TODO toast
+                console.error('ERROR')
+            }
         } catch (error: Error | any) {
+            //TODO toast
             console.error(error.message)
         }
     }
 
 
     return (
-        <SafeAreaView>
-            {isLoading ?
-                <Spinner/>
-                :
-                <VStack className="p-4 gap-4">
-                    {data?.body?.author && <PostHeader date={data!!.body.createdAt} author={data!!.body.author} size="lg"/>}
-                    <Image source={{uri: data!!.body.mediaUrl}} style={styles.postImage}/>
-                    <Text style={styles.description}>
-                        {data!!.body.content}
-                    </Text>
+        <SafeAreaView className="flex-1">
+            <KeyboardAvoidingView style={{flex: 1}}
+                                  behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                                  keyboardVerticalOffset={100}>
+                {isLoading ?
+                    <Spinner/>
+                    :
+                    <VStack className="p-4 flex-1">
+                        <ScrollView>
+                            <VStack className="flex-1 gap-4">
+                                {data?.body?.author &&
+                                    <PostHeader date={data!!.body.createdAt} author={data!!.body.author} size="lg"/>}
+                                <Image source={{uri: data!!.body.mediaUrl}} style={styles.postImage}/>
+                                <Text style={styles.description}>
+                                    {data!!.body.content}
+                                </Text>
 
-                    <Divider />
+                                <Divider/>
 
-                    <Text bold size="lg">
-                        Commentaires :
-                    </Text>
+                                <Heading bold size="lg">
+                                    Comments
+                                </Heading>
 
-                    <VStack className="w-full max-w-[300px] rounded-md border border-background-200 p-4">
-                        <FormControl
-                            isInvalid={isInvalid}
-                            size="md"
-                        >
-                            <FormControlLabel>
-                                <FormControlLabelText>Commentaire</FormControlLabelText>
-                            </FormControlLabel>
-                            <Input className="my-1">
-                                <InputField
-                                    type="text"
-                                    placeholder="..."
-                                    value={inputValue}
-                                    onChangeText={(text) => setInputValue(text)}
+                                {data!!.body.comments.length ?
+                                    data!!.body.comments.map(item => (
+                                        <CommentView key={`comment-${item.id}`} comment={item}/>
+                                    ))
+                                    :
+                                    <Text>No comments available. Be the first to react!</Text>
+                                }
+                            </VStack>
+                        </ScrollView>
+
+                        <VStack>
+                            <Divider/>
+                            <HStack className="my-4 items-center gap-4">
+                                <Controller
+                                    control={form.control}
+                                    name="comment"
+                                    render={({field: {onChange, onBlur, value}}) => (
+                                        <FormControl
+                                            isInvalid={!!form.formState.errors.comment}
+                                            size="md"
+                                            className="flex-1"
+                                        >
+                                            <Input className="my-1" size="lg">
+                                                <InputField
+                                                    type="text"
+                                                    placeholder="Comment this post"
+                                                    value={value}
+                                                    onChangeText={onChange}
+                                                    onBlur={onBlur}
+                                                />
+                                            </Input>
+                                            <FormControlError>
+                                                <FormControlErrorText>
+                                                    {form.formState.errors.comment?.message}
+                                                </FormControlErrorText>
+                                            </FormControlError>
+                                        </FormControl>
+                                    )}
                                 />
-                            </Input>
-                        </FormControl>
-                        <Button className="w-full mt-4" size="md" onPress={form.handleSubmit(onSubmit)}>
-                            <ButtonText>Sign up</ButtonText>
-                        </Button>
-                    </VStack>
 
-                    <FlatList
-                        data={data!!.body.comments}
-                        keyExtractor={(item) => `comment-${item.id}`}
-                        renderItem={({item}) => (
-                            <CommentView comment={item}/>
-                        )}
-                    />
-                </VStack>
-            }
+                                <Button size="md" variant="outline" onPress={form.handleSubmit(onSubmit)}>
+                                    <ButtonText>Comment</ButtonText>
+                                </Button>
+                            </HStack>
+                        </VStack>
+                    </VStack>
+                }
+            </KeyboardAvoidingView>
         </SafeAreaView>
     );
 }

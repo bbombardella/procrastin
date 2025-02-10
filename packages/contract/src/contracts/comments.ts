@@ -1,4 +1,9 @@
-import { CommentCreateInputSchema, CommentSchema } from '@procrastin/prisma'
+import {
+	CommentCreateInputSchema,
+	CommentCreateWithoutAuthorInputSchema,
+	CommentSchema,
+	CommentWithAuthorSchema
+} from '@procrastin/prisma'
 import { initContract } from '@ts-rest/core'
 
 const c = initContract()
@@ -11,7 +16,7 @@ export const commentsContract = c.router(
 			path: '',
 			summary: 'Get all comments',
 			responses: {
-				200: CommentSchema.array(),
+				200: CommentWithAuthorSchema.array(),
 				404: c.type<string>()
 			},
 		},
@@ -20,16 +25,17 @@ export const commentsContract = c.router(
 			path: '/:id',
 			summary: 'Get a comment by id',
 			responses: {
-				200: CommentSchema,
+				200: CommentWithAuthorSchema,
 			},
 		},
 		createComment: {
 			method: 'POST',
 			path: '',
 			summary: 'Create a comment',
-			body: CommentCreateInputSchema,
+			body: CommentCreateWithoutAuthorInputSchema,
 			responses: {
-				201: CommentSchema,
+				201: CommentWithAuthorSchema,
+				404: c.type<string>()
 			},
 		},
 		updateComment: {
@@ -38,7 +44,7 @@ export const commentsContract = c.router(
 			summary: 'Update a comment by id',
 			body: CommentCreateInputSchema,
 			responses: {
-				200: CommentSchema,
+				200: CommentWithAuthorSchema,
 			},
 		},
 		deleteComment: {
