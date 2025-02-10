@@ -1,4 +1,3 @@
-// import { AuthService } from '@cinestia/web/auth'
 import { contract } from '@procrastin/contract'
 import { environment } from '@procrastin/environment'
 import { ClientArgs, initClient } from '@ts-rest/core'

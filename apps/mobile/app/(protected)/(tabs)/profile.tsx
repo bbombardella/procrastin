@@ -27,6 +27,7 @@ import {Text} from '../../../components/ui/text';
 import {Link} from 'expo-router';
 import * as ImagePicker from 'expo-image-picker'
 import {showNewToast} from '../../../helper/show-toast.function';
+import {useQueryClient} from '@tanstack/react-query';
 
 const userInfoSchema = z.object({
     id: z.string(),
@@ -44,6 +45,7 @@ const userInfoSchema = z.object({
 export default function Profile() {
     const {signOut} = useSupabase()
     const toast = useToast()
+    const client = useQueryClient()
 
     const [_, setToastId] = useState<string>('')
     const [loading, setLoading] = useState(false)
@@ -123,7 +125,7 @@ export default function Profile() {
         try {
             setRefreshing(true)
 
-            let fileUrl: string | undefined = undefined
+            let fileUrl: string = data.profilePictureUrl
             if (data.profilePictureSystem) {
                 const formData = new FormData()
                 // @ts-expect-error: special react native format for form data
@@ -158,11 +160,14 @@ export default function Profile() {
 
             if (user.status === 200) {
                 form.reset({
+                    id: String(user.body.id),
                     firstName: user.body.firstName,
                     lastName: user.body.lastName,
                     description: user.body.description,
-                    profilePictureUrl: user.body.profilePictureUrl
+                    profilePictureUrl: user.body.profilePictureUrl,
                 })
+
+                queryClient.users.me.setQueryData(client, [user.body.email], () => user)
             }
 
             showNewToast(toast, 'Profile edited successfully!', setToastId)

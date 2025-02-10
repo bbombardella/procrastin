@@ -37,7 +37,7 @@ export default function HomeScreen() {
                             :
                             <>
                                 <Avatar size="lg">
-                                    <AvatarFallbackText>{me.data!!.body.firstName}&nbsp;{me.data!!.body.lastName}</AvatarFallbackText>
+                                    <AvatarFallbackText>{`${me.data!!.body.firstName} ${me.data!!.body.lastName}`}</AvatarFallbackText>
                                     <AvatarImage
                                         source={{
                                             uri: me.data?.body?.profilePictureUrl,
