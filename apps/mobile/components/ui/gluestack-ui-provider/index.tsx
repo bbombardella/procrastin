@@ -1,7 +1,6 @@
 import { OverlayProvider } from '@gluestack-ui/overlay'
 import { ToastProvider } from '@gluestack-ui/toast'
-import { colorScheme as colorSchemeNW } from 'nativewind'
-import React from 'react'
+import React, {useMemo} from 'react'
 import { ColorSchemeName, View, ViewProps } from 'react-native'
 
 import { config } from './config'
@@ -26,9 +25,7 @@ export function GluestackUIProvider({
 	children?: React.ReactNode
 	style?: ViewProps['style']
 }) {
-	const colorSchemeName = getColorSchemeName(colorScheme, mode)
-
-	colorSchemeNW.set(mode)
+	const colorSchemeName = useMemo(() => getColorSchemeName(colorScheme, mode), [colorScheme, mode])
 
 	return (
 		<View
