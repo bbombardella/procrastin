@@ -1,6 +1,7 @@
 import {ErrorToast} from '../components/ui/error-toast';
 import {SuccessToast} from '../components/ui/success-toast';
 import {useToast} from '../components/ui/toast';
+import * as Haptics from 'expo-haptics';
 
 export const showNewToast = (
     toast: ReturnType<typeof useToast>,
@@ -22,4 +23,8 @@ export const showNewToast = (
             }
         }
     })
+
+    if (process.env.EXPO_OS && process.env.EXPO_OS !== 'web') {
+        Haptics.notificationAsync(error ? Haptics.NotificationFeedbackType.Error : Haptics.NotificationFeedbackType.Success)
+    }
 }
