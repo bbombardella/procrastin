@@ -195,7 +195,7 @@ export default function Profile() {
                                         <AvatarFallbackText>{form.getValues(['firstName', 'lastName']).join(' ')}</AvatarFallbackText>
                                         <AvatarImage
                                             source={{
-                                                uri: form.watch('profilePictureSystem.uri') ?? form.watch('profilePictureUrl'),
+                                                uri: form.watch('profilePictureSystem')?.uri ?? form.watch('profilePictureUrl'),
                                             }}
                                         />
                                         <AvatarBadge/>

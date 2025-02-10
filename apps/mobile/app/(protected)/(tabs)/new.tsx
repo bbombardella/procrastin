@@ -138,8 +138,8 @@ export default function NewPostScreen() {
                             <ButtonText>Choose an image</ButtonText>
                         </Button>
 
-                        {form.watch('media.uri') &&
-                            <Image source={{uri: form.watch('media.uri')}} style={styles.postImage}/>}
+                        {form.watch('media')?.uri &&
+                            <Image source={{uri: form.watch('media').uri}} style={styles.postImage}/>}
 
                         <Controller
                             control={form.control}
