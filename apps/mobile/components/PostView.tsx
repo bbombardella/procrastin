@@ -8,9 +8,18 @@ import {Dimensions, Image, Pressable} from "react-native";
 import {Box} from "./ui/box";
 import {PostWithAuthor} from "@procrastin/prisma";
 import {PostHeader} from './PostHeader';
+import * as Haptics from 'expo-haptics';
 
 export default function PostView({post}: { post: PostWithAuthor }) {
     const [liked, setLiked] = useState(false)
+
+    const handleLike = () => {
+        setLiked((prev) => !prev)
+        if (process.env.EXPO_OS && process.env.EXPO_OS !== 'web') {
+            // Add a soft haptic feedback when pressing down on the tabs.
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        }
+    }
 
     return (
         <VStack className="w-full p-4" space="md">
@@ -35,7 +44,7 @@ export default function PostView({post}: { post: PostWithAuthor }) {
                     className="w-full items-center justify-start"
                     space="xl"
                 >
-                    <Pressable onPress={() => setLiked(!liked)}>
+                    <Pressable onPress={handleLike}>
                         <MaterialIcons
                             name={liked ? "favorite" : "favorite-border"}
                             size={24}
