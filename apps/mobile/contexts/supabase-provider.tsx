@@ -2,7 +2,7 @@ import { Session, User } from '@supabase/supabase-js'
 import { SplashScreen, useRouter, useSegments } from 'expo-router'
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { supabase } from '../config/supabase'
+import { supabase } from '../configs/supabase'
 
 SplashScreen.preventAutoHideAsync()
 

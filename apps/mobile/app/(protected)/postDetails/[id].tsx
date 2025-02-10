@@ -17,7 +17,7 @@ import {Divider} from '../../../components/ui/divider';
 import {HStack} from '../../../components/ui/hstack';
 import {Button, ButtonSpinner, ButtonText} from '../../../components/ui/button';
 import {Heading} from '../../../components/ui/heading';
-import {showNewToast} from '../../../helper/show-toast.function';
+import {showNewToast} from '../../../helpers/show-toast.function';
 import {useToast} from '../../../components/ui/toast';
 
 const addCommentSchema = z.object({

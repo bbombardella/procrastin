@@ -4,7 +4,7 @@ import {Controller, useForm} from 'react-hook-form'
 import {KeyboardAvoidingView, Platform, ScrollView, View} from 'react-native'
 import {z} from 'zod'
 
-import {useSupabase} from '../../context/supabase-provider'
+import {useSupabase} from '../../contexts/supabase-provider'
 import {VStack} from '../../components/ui/vstack';
 import {Heading} from '../../components/ui/heading';
 import {
@@ -23,7 +23,7 @@ import {HStack} from '../../components/ui/hstack';
 import {useToast} from '../../components/ui/toast';
 import {queryClient} from '../../libs/http';
 import {Textarea, TextareaInput} from '../../components/ui/textarea';
-import {showNewToast} from '../../helper/show-toast.function';
+import {showNewToast} from '../../helpers/show-toast.function';
 
 const signupSchema = z.object({
     firstName: z.string().min(2, 'First name must be at least 2 characters long'),

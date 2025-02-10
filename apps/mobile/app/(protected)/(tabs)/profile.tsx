@@ -1,5 +1,5 @@
 import {Alert, KeyboardAvoidingView, Platform, RefreshControl, ScrollView, TouchableOpacity} from 'react-native';
-import {useSupabase} from '../../../context/supabase-provider';
+import {useSupabase} from '../../../contexts/supabase-provider';
 import {VStack} from '../../../components/ui/vstack';
 import {Avatar, AvatarBadge, AvatarFallbackText, AvatarImage} from '../../../components/ui/avatar';
 import {HStack} from '../../../components/ui/hstack';
@@ -26,7 +26,7 @@ import {useToast} from '../../../components/ui/toast';
 import {Text} from '../../../components/ui/text';
 import {Link} from 'expo-router';
 import * as ImagePicker from 'expo-image-picker'
-import {showNewToast} from '../../../helper/show-toast.function';
+import {showNewToast} from '../../../helpers/show-toast.function';
 import {useQueryClient} from '@tanstack/react-query';
 
 const userInfoSchema = z.object({

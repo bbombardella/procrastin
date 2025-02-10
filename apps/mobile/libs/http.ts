@@ -3,7 +3,7 @@ import { environment } from '@procrastin/environment'
 import { ClientArgs, initClient } from '@ts-rest/core'
 import { initQueryClient } from '@ts-rest/react-query'
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, isAxiosError, Method } from 'axios'
-import {supabase} from '../config/supabase';
+import {supabase} from '../configs/supabase';
 
 const clientArgs: ClientArgs = {
 	baseUrl: environment.apiBaseUrl,

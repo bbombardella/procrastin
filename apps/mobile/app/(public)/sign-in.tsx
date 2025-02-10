@@ -2,7 +2,7 @@ import {zodResolver} from '@hookform/resolvers/zod'
 import {Controller, useForm} from 'react-hook-form'
 import {z} from 'zod'
 
-import {useSupabase} from '../../context/supabase-provider'
+import {useSupabase} from '../../contexts/supabase-provider'
 import {
     FormControl,
     FormControlError,
@@ -24,7 +24,7 @@ import {KeyboardAvoidingView, Platform, View} from 'react-native';
 import {useState} from 'react';
 import {EyeIcon, EyeOffIcon} from '../../components/ui/icon';
 import {useToast} from '../../components/ui/toast';
-import {showNewToast} from '../../helper/show-toast.function';
+import {showNewToast} from '../../helpers/show-toast.function';
 
 const formSchema = z.object({
     email: z.string().email('Please enter a valid email address.'),

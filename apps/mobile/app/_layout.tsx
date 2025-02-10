@@ -9,7 +9,7 @@ import {StatusBar} from 'expo-status-bar'
 import {useEffect} from 'react'
 
 import {GluestackUIProvider} from '../components/ui/gluestack-ui-provider';
-import {SupabaseProvider, useSupabase} from '../context/supabase-provider'
+import {SupabaseProvider, useSupabase} from '../contexts/supabase-provider'
 import {useColorScheme} from '../hooks/useColorScheme'
 
 import "../global.css"

@@ -6,7 +6,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import PostView from '../../../components/PostView';
 import {useBottomTabOverflow} from '../../../components/ui/TabBarBackground';
 import {queryClient} from '../../../libs/http';
-import {useSupabase} from '../../../context/supabase-provider';
+import {useSupabase} from '../../../contexts/supabase-provider';
 import {Spinner} from '../../../components/ui/spinner';
 import {Heading} from '../../../components/ui/heading';
 import {useState} from 'react';

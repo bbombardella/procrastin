@@ -23,7 +23,7 @@ import {useBottomTabOverflow} from '../../../components/ui/TabBarBackground';
 import {useState} from 'react';
 import {queryClient} from '../../../libs/http';
 import {useToast} from '../../../components/ui/toast';
-import {showNewToast} from '../../../helper/show-toast.function';
+import {showNewToast} from '../../../helpers/show-toast.function';
 import {useRouter} from 'expo-router';
 
 const postSchema = z.object({

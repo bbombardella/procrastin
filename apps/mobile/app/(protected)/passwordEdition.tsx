@@ -18,8 +18,8 @@ import {useState} from 'react';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Button, ButtonIcon, ButtonSpinner, ButtonText} from '../../components/ui/button';
 import {HStack} from '../../components/ui/hstack';
-import {supabase} from '../../config/supabase';
-import {showNewToast} from '../../helper/show-toast.function';
+import {supabase} from '../../configs/supabase';
+import {showNewToast} from '../../helpers/show-toast.function';
 import {useToast} from '../../components/ui/toast';
 import {useRouter} from 'expo-router';
 
