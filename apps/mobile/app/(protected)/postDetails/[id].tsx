@@ -1,5 +1,5 @@
 import {useLocalSearchParams, useNavigation} from "expo-router";
-import {Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet} from "react-native";
+import {Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet} from "react-native";
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Text} from "../../../components/ui/text";
 import {VStack} from "../../../components/ui/vstack";
@@ -70,6 +70,8 @@ export default function PostDetails() {
         } catch (error: Error | any) {
             //TODO toast
             console.error(error.message)
+        } finally {
+            Keyboard.dismiss()
         }
     }
 
