@@ -112,7 +112,7 @@ export default function PostDetails() {
 
                         <VStack>
                             <Divider/>
-                            <HStack className="p-4 my-4 items-center gap-4">
+                            <HStack className="p-4 my-2 items-center gap-4">
                                 <Controller
                                     control={form.control}
                                     name="comment"
@@ -122,7 +122,7 @@ export default function PostDetails() {
                                             size="md"
                                             className="flex-1"
                                         >
-                                            <Input className="my-1" size="lg">
+                                            <Input size="lg">
                                                 <InputField
                                                     type="text"
                                                     placeholder="Comment this post"
