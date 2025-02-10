@@ -10,6 +10,7 @@ import {useSupabase} from '../../../context/supabase-provider';
 import {Spinner} from '../../../components/ui/spinner';
 import {Heading} from '../../../components/ui/heading';
 import {useState} from 'react';
+import {Divider} from '../../../components/ui/divider';
 
 export default function HomeScreen() {
     const bottom = useBottomTabOverflow()
@@ -28,26 +29,31 @@ export default function HomeScreen() {
     return (
         <SafeAreaView className='bg-tertiary-0 flex-1'>
             <VStack style={{paddingBottom: bottom, flex: 1}}>
-                <HStack className="w-full p-4 items-center" space="xl">
-                    {me.isLoading ?
-                        <Spinner/>
-                        :
-                        <>
-                            <Avatar size="lg">
-                                <AvatarFallbackText>{me.data!!.body.firstName}&nbsp;{me.data!!.body.lastName}</AvatarFallbackText>
-                                <AvatarImage
-                                    source={{
-                                        uri: me.data?.body?.profilePictureUrl,
-                                    }}
-                                />
-                                <AvatarBadge/>
-                            </Avatar>
 
-                            <Heading size="lg" bold>
-                                {me.data?.body?.firstName ?? ''}&nbsp;{me.data?.body?.lastName ?? ''}
-                            </Heading>
-                        </>}
-                </HStack>
+                <VStack>
+                    <HStack className="w-full p-4 items-center" space="xl">
+                        {me.isLoading ?
+                            <Spinner/>
+                            :
+                            <>
+                                <Avatar size="lg">
+                                    <AvatarFallbackText>{me.data!!.body.firstName}&nbsp;{me.data!!.body.lastName}</AvatarFallbackText>
+                                    <AvatarImage
+                                        source={{
+                                            uri: me.data?.body?.profilePictureUrl,
+                                        }}
+                                    />
+                                    <AvatarBadge/>
+                                </Avatar>
+
+                                <Heading size="lg" bold>
+                                    Hi {me.data?.body?.firstName ?? ''}&nbsp;{me.data?.body?.lastName ?? ''}! 👋
+                                </Heading>
+                            </>}
+                    </HStack>
+                    <Divider />
+                </VStack>
+
 
                 {posts.isLoading ?
                     <Spinner/>
