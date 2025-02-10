@@ -84,9 +84,9 @@ export default function PostDetails() {
                 {isLoading ?
                     <Spinner/>
                     :
-                    <VStack className="p-4 flex-1">
+                    <VStack className="flex-1">
                         <ScrollView>
-                            <VStack className="flex-1 gap-4">
+                            <VStack className="flex-1 gap-4 p-4">
                                 {data?.body?.author &&
                                     <PostHeader date={data!!.body.createdAt} author={data!!.body.author} size="lg"/>}
                                 <Image source={{uri: data!!.body.mediaUrl}} style={styles.postImage}/>
@@ -112,7 +112,7 @@ export default function PostDetails() {
 
                         <VStack>
                             <Divider/>
-                            <HStack className="my-4 items-center gap-4">
+                            <HStack className="p-4 my-4 items-center gap-4">
                                 <Controller
                                     control={form.control}
                                     name="comment"
