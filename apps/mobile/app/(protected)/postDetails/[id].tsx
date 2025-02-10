@@ -6,7 +6,7 @@ import {VStack} from "../../../components/ui/vstack";
 import CommentView from "../../../components/CommentView";
 import {FormControl, FormControlError, FormControlErrorText} from "../../../components/ui/form-control";
 import {Input, InputField} from "../../../components/ui/input";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {z} from "zod";
 import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -15,8 +15,10 @@ import {Spinner} from '../../../components/ui/spinner';
 import {PostHeader} from '../../../components/PostHeader';
 import {Divider} from '../../../components/ui/divider';
 import {HStack} from '../../../components/ui/hstack';
-import {Button, ButtonText} from '../../../components/ui/button';
+import {Button, ButtonSpinner, ButtonText} from '../../../components/ui/button';
 import {Heading} from '../../../components/ui/heading';
+import {showNewToast} from '../../../helper/show-toast.function';
+import {useToast} from '../../../components/ui/toast';
 
 const addCommentSchema = z.object({
     comment: z.string().min(2, 'Comment must be at least 2 characters long'),
@@ -25,6 +27,10 @@ const addCommentSchema = z.object({
 export default function PostDetails() {
     const navigation = useNavigation()
     const {id}: { id: string } = useLocalSearchParams()
+    const toast = useToast()
+
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+    const [_, setToastId] = useState<string>('')
 
     const {isLoading, data} = queryClient.posts.getPost.useQuery([`post-details-${id}`], {params: {id}})
 
@@ -49,6 +55,7 @@ export default function PostDetails() {
         }
 
         try {
+            setIsSubmitting(true)
             const result = await queryClient.comments.createComment.mutation({
                 body: {
                     content: formData.comment,
@@ -63,15 +70,16 @@ export default function PostDetails() {
             if (result.status === 201) {
                 data.body.comments.unshift(result.body)
                 form.reset()
+                showNewToast(toast, 'Your comment has been sent!', setToastId)
             } else {
-                //TODO toast
-                console.error('ERROR')
+                showNewToast(toast, 'Error while sending your comment', setToastId, true)
             }
         } catch (error: Error | any) {
-            //TODO toast
+            showNewToast(toast, error.message, setToastId, true)
             console.error(error.message)
         } finally {
             Keyboard.dismiss()
+            setIsSubmitting(false)
         }
     }
 
@@ -140,8 +148,14 @@ export default function PostDetails() {
                                     )}
                                 />
 
-                                <Button size="md" variant="outline" onPress={form.handleSubmit(onSubmit)}>
-                                    <ButtonText>Comment</ButtonText>
+                                <Button size="md" variant="outline"
+                                        isDisabled={isSubmitting}
+                                        onPress={form.handleSubmit(onSubmit)}>
+                                    {isSubmitting ?
+                                        <ButtonSpinner/>
+                                        :
+                                        <ButtonText>Comment</ButtonText>
+                                    }
                                 </Button>
                             </HStack>
                         </VStack>
