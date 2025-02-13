@@ -97,6 +97,7 @@ export default function PostDetails() {
                             <VStack className="flex-1 gap-4 p-4">
                                 {data?.body?.author &&
                                     <PostHeader date={data!!.body.createdAt} author={data!!.body.author} size="lg"/>}
+                                <Heading>{data!!.body.title}</Heading>
                                 <Image source={{uri: data!!.body.mediaUrl}} style={styles.postImage}/>
                                 <Text style={styles.description}>
                                     {data!!.body.content}
