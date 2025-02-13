@@ -17,14 +17,13 @@ import {Input, InputField, InputIcon, InputSlot} from '../../components/ui/input
 import {VStack} from '../../components/ui/vstack'
 import {Center} from '../../components/ui/center';
 import {Divider} from '../../components/ui/divider';
-import {Link} from 'expo-router';
-import {Text} from '../../components/ui/text';
 import {Heading} from '../../components/ui/heading';
 import {KeyboardAvoidingView, Platform, View} from 'react-native';
 import {useState} from 'react';
 import {EyeIcon, EyeOffIcon} from '../../components/ui/icon';
 import {useToast} from '../../components/ui/toast';
 import {showNewToast} from '../../helpers/show-toast.function';
+import {useRouter} from 'expo-router';
 
 const formSchema = z.object({
     email: z.string().email('Please enter a valid email address.'),
@@ -36,6 +35,7 @@ const formSchema = z.object({
 
 export default function SignIn() {
     const {signInWithPassword} = useSupabase()
+    const router = useRouter()
     const toast = useToast()
 
     const [_, setToastId] = useState<string>('')
@@ -59,6 +59,8 @@ export default function SignIn() {
             console.error(error.message)
         }
     }
+
+    const navigateToSignUp = () => router.navigate('/sign-up')
 
     return (
         <KeyboardAvoidingView style={{flex: 1}}
@@ -149,10 +151,8 @@ export default function SignIn() {
                         </Button>
                         <Divider className="my-4"/>
 
-                        <Button className="w-full" size="md" variant="outline">
-                            <Link href="/sign-up">
-                                <Text>Sign up</Text>
-                            </Link>
+                        <Button className="w-full" size="md" variant="outline" onPress={navigateToSignUp}>
+                            <ButtonText>Sign up</ButtonText>
                         </Button>
                     </Center>
                 </View>
