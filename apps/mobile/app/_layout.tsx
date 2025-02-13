@@ -14,6 +14,7 @@ import {useColorScheme} from '../hooks/useColorScheme'
 
 import "../global.css"
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import { environment } from '@procrastin/environment'
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
@@ -21,6 +22,9 @@ SplashScreen.preventAutoHideAsync()
 const client = new QueryClient()
 
 export default function RootLayout() {
+
+    console.log(environment)
+    
     const colorScheme = useColorScheme()
     const {initialized} = useSupabase()
     const [loaded] = useFonts({

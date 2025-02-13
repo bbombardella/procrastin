@@ -25,6 +25,7 @@ import {queryClient} from '../../../libs/http';
 import {useToast} from '../../../components/ui/toast';
 import {showNewToast} from '../../../helpers/show-toast.function';
 import {useRouter} from 'expo-router';
+import { QueryClient, useQueryClient } from '@tanstack/react-query';
 
 const postSchema = z.object({
     title: z.string().min(1, 'Please provide a title'),
@@ -40,6 +41,7 @@ export default function NewPostScreen() {
     const bottom = useBottomTabOverflow()
     const toast = useToast()
     const router = useRouter()
+    const client = useQueryClient()
 
     const [_, setToastId] = useState('')
     const [submitting, setSubmitting] = useState(false)
@@ -89,6 +91,9 @@ export default function NewPostScreen() {
                 showToast(toast, 'Post created successfully!', setToastId)
                 form.reset()
 
+                client.invalidateQueries({
+                    queryKey: ['posts']
+                })
                 router.navigate('/(protected)/(tabs)')
             } else {
                 throw new Error('An error ocurred while creating the post.')

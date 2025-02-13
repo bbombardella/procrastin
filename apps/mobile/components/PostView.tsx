@@ -9,6 +9,7 @@ import {Box} from "./ui/box";
 import {PostWithAuthor} from "@procrastin/prisma";
 import {PostHeader} from './PostHeader';
 import * as Haptics from 'expo-haptics';
+import { Heading } from "./ui/heading";
 
 export default function PostView({post}: { post: PostWithAuthor }) {
     const [liked, setLiked] = useState(false)
@@ -25,6 +26,7 @@ export default function PostView({post}: { post: PostWithAuthor }) {
         <VStack className="w-full p-4" space="md">
             <PostHeader date={post.createdAt} author={post.author} size="sm"/>
             <VStack>
+                <Heading>{post.title}</Heading>
                 <Text>
                     {post.content}
                 </Text>

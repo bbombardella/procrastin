@@ -18,7 +18,7 @@ export default function HomeScreen() {
     const [isRefreshing, setIsRefreshing] = useState(false)
 
     const me = queryClient.users.me.useQuery([user?.email])
-    const posts = queryClient.posts.getPosts.useQuery([])
+    const posts = queryClient.posts.getPosts.useQuery(['posts'])
 
     const refetch = async () => {
         setIsRefreshing(true)

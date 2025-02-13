@@ -168,6 +168,10 @@ export default function Profile() {
                 })
 
                 queryClient.users.me.setQueryData(client, [user.body.email], () => user)
+
+                client.invalidateQueries({
+                    queryKey: ['posts']
+                })
             }
 
             showNewToast(toast, 'Profile edited successfully!', setToastId)
