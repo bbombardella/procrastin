@@ -21,7 +21,7 @@ import {CloseIcon, EditIcon, LockIcon} from '../../../components/ui/icon';
 import {Button, ButtonIcon, ButtonSpinner, ButtonText} from '../../../components/ui/button';
 import {Spinner} from '../../../components/ui/spinner';
 import {queryClient} from '../../../libs/http';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useToast} from '../../../components/ui/toast';
 import {Text} from '../../../components/ui/text';
 import {Link} from 'expo-router';
@@ -91,6 +91,10 @@ export default function Profile() {
             console.error(error.message)
         }
     }
+
+    useEffect(() => {
+        form.formState.isValid
+    }, [form.watch()]);
 
     const pickImage = async () => {
         try {
